@@ -9,11 +9,28 @@ import CheckDone                            from 'img/check-done.svg';
 
 
 export default class Message extends React.Component {
+
     constructor(props) {
+      
+        console.log("---ENTERED MESSAGE COMPONENT--------")
+
         super(props);
         this.state = {
             imgSrc: Check,
         };
+    }
+    componentDidMount() {
+
+        console.log(">>>>>>>>>NOW IN MESSAGE<<<<<<<<<<<")
+        console.log(this.state)
+
+    }
+
+    componentDidUpdate(pastProps) {
+
+      console.log(">>>>>>MESSAGE COMPONENT UPDATED<<<<<")
+      console.log(this.pastProps)
+
     }
 
     handleOnClick = () => {

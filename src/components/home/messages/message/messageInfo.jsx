@@ -2,6 +2,9 @@ import React          from 'react';
 
 const Sentiment = ({sentiment}) => {
     // if (sentiment >=
+    console.log("---ENTERED SENTIMENT FUNCTION--------")
+    console.log({sentiment: sentiment})
+
     return (
         <div className={'sentiment message-info ' + sentiment}>
             <h4 className='key'>Sentiment: </h4>
@@ -43,6 +46,8 @@ const Route = ({keywords}) => {
 }
 
 const Entities = ({entities}) => {
+    console.log("---ENTERED ENTITIES FUNCTION--------")
+    console.log({entities: entities})
     let valString = '';
     if (entities != {} ){
         valString = Object.keys(entities).join(', ')
@@ -57,6 +62,10 @@ const Entities = ({entities}) => {
 }
 
 const Concepts = ({concepts}) => {
+  
+  console.log("---ENTERED CONCEPT FUNCTION--------")
+  console.log({concepts: concepts})
+
     let valString = '';
     if (concepts != {} ){
         valString = Object.keys(concepts).join(', ')

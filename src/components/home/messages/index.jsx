@@ -4,6 +4,10 @@ import ReactCSSTransitionGroup        from 'react-addons-css-transition-group';
 import './style.scss';
 
 export default ({ data, onArchive }) => {
+
+  console.log(">>>>>ENTERED MESSAGES<<<<<<<<<")
+  console.log({data: data})
+  
     const messages = data.map((m) => {
         return (
       <Message

@@ -114,6 +114,9 @@ export default class Home extends Component {
     }
 
     getSentimentCount = (numDays) => {
+
+       console.log("----ENTERED SENTIMENT-----")
+
         this.setState({
             numDays,
         });

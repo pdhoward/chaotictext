@@ -47,8 +47,6 @@ module.exports = function(router) {
         getDBText({})
           .then(function(result){
             composeObject( result, function(newObj) {
-              console.log(">>>RESULT<<<")
-              console.log({newObj: newObj})
 
               let data = {}
               data.messages = newObj;
@@ -71,24 +69,21 @@ module.exports = function(router) {
 
       router.get('/get_sentiment_count/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Sentiment Count'));
-          return
+          return {data: 10}
+          next()
       })
 
       router.get('/get_num_messages/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Number Messages'));
-          return
+          return {data: {num_messages: 8 }}
+          next()
       })
   }
 
   function composeObject( oldObj, cb ) {
-
     let objArray = [];
 
     for (var i = 0; i < oldObj.length; i++) {
-
-      console.log(">>>INPUT<<<")
-      console.log(oldObj[i])
-
       newObject.day = moment(oldObj[i].created_at).format("ddd, MMMM D");
       newObject.time = moment(oldObj[i].created_at).format("h:mm:ss a");
       newObject.id = oldObj[i]._id;
@@ -96,13 +91,11 @@ module.exports = function(router) {
       newObject.phoneNumber = oldObj[i].From;
       newObject.city = oldObj[i].FromCity;
       newObject.state = oldObj[i].FromState;
-      newObject.keywords = {};
-      newObject.concepts = {};
-      newObject.entities = {};
+      newObject.keywords = "test keywords";
+      newObject.concepts = "test concepts";
+      newObject.entities = "test entities";
       newObject.sentiment = "Positive";
       objArray[i] = newObject;
-      console.log(">>>OUTPUT<<<")
-      console.log(objArray[i])
 
     }
     cb(objArray)

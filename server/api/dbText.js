@@ -6,22 +6,21 @@
 ////////////////////////////////////////////////////////////////////////
 import textMessages     from '../db/schemas/Message';
 
-const texts = new textMessages();
 
 module.exports = {
 
-  get: function(params, callback) {
+  get: function({}, cb) {
 
-   texts.find({}, function(err, response) {
+   textMessages.find({}, function(err, response) {
       if (err) {
         if (err.error !== 'not_found') {
-          return callback(err);
+          return cb(err);
         } else {
-          return callback(null);
+          return cb(null);
         }};
-        return callback(null, response);
-
+      return cb(err, response);
     });
+
   },
 /*
   put: function(params, callback) {

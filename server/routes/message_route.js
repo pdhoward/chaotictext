@@ -70,7 +70,7 @@ module.exports = function(router) {
 
     var io = req.app.get('socketio');
 
-    const textMessage = new ChatMessage(req.body);
+    let textMessage = new ChatMessage(req.body);    
 
    // If session context exists, need to use it for next iteration
    // It means we've already launched a discussion

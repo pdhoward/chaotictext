@@ -57,6 +57,7 @@ export default class Home extends Component {
 
     componentDidMount() {
         // this.socket.emit('get init incoming data', this.getPageNumber());
+        console.log("------COMPONENT MOUNTED - GET MESSAGES------")
         this.getSetMessages();
     }
 
@@ -66,6 +67,10 @@ export default class Home extends Component {
 
     getSetMessages() {
         axios.get(`/api/get_messages/${this.getPageNumber()}`).then(resp => {
+
+            console.log("---------GET MESSAGES ---------")
+            console.log({response: resp})
+
             this.setState({
                 messages: resp.data.messages,
                 totalPages: resp.data.totalPages,
@@ -75,6 +80,10 @@ export default class Home extends Component {
 
     getSetArchivedMessages() {
         axios.get(`/api/get_archived_messages/${this.getPageNumber()}`).then(resp => {
+
+          console.log("---------GET ARCHIVED MESSAGES ---------")
+          console.log({response: resp})
+
             this.setState({
                 messages: resp.data.messages,
                 totalPages: resp.data.totalPages,
@@ -109,12 +118,20 @@ export default class Home extends Component {
             numDays,
         });
         axios.get(`/api/get_sentiment_count/${numDays}`).then(resp => {
+
+          console.log("---------GET SENTIMENT COUNT ---------")
+          console.log({response: resp})
+
             this.setState({
                 sentimentCount: resp.data,
             });
         });
 
         axios.get(`/api/get_num_messages/${numDays}`).then((resp) => {
+
+          console.log("---------GET MESSAGE COUNT ---------")
+          console.log({response: resp})
+
             this.setState({
                 numMessages: resp.data.num_messages,
             });

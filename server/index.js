@@ -128,7 +128,18 @@ require('./routes/analytic_route')(analyticRouter);
 ///////////////////////////// API CATALOGUE /////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
+
+app.use(function(req, res, next) {
+  console.log("---------INCOMING DEBUG AND TRACE ----------")
+  console.log({requrl: req.url})
+  console.log({reqmethod: req.method})
+  console.log({reqbody: req.body})
+  next()
+})
+
+///////////////////////////////////////////////////////////////////
 app.use('/api', messageRouter);
+app.use('/api', dbRouter);
 //app.use('/api', wordRouter)
 //app.use('/api', alchemyRouter)
 //app.use('/api', patternRouter)
@@ -137,7 +148,7 @@ app.use('/api', messageRouter);
 
 app.use('/build', express.static(buildFolder));
 
-app.get('/*', function(req, res) {
+app.get('/', function(req, res) {
 		res.sendFile(htmlFile)
 	});
 

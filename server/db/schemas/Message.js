@@ -23,6 +23,7 @@ var messageSchema = mongoose.Schema({
   MessageSid: String,
   AccountSid: String,
   From: String,
+  created_at: { type: Date, default: Date.now },
   ApiVersion: String
 
 

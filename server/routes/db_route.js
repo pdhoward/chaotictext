@@ -2,7 +2,8 @@
 
 import Promise               from 'bluebird';
 import dbText                from '../api/dbText';
-import bodyParser            from 'body-parser'
+import bodyParser            from 'body-parser';
+import moment                from 'moment';
 import { g, b, gr, r, y }    from '../color/chalk';
 
 
@@ -39,14 +40,22 @@ sendObject.messages[0] = newObject;
     //////////////////////////////////////////////////////////
 
 module.exports = function(router) {
-    router.use(bodyParser.json());
+      router.use(bodyParser.json());
 
-      router.get('/get_messages', function(req, res, next) {
-        console.log(g('DB Route Get Messages'));
-        getDBText()
+      router.get('/get_messages/:cnt', function(req, res, next) {
+
+        getDBText({})
           .then(function(result){
+            composeObject( result, function(newObj) {
+              console.log(">>>RESULT<<<")
+              console.log({newObj: newObj})
 
-            return sendObject
+              let data = {}
+              data.messages = newObj;
+              data.totalPages = 1;
+              res.json(data);
+              next();
+            });
           })
         })
 
@@ -60,13 +69,42 @@ module.exports = function(router) {
           return
       })
 
-      router.get('/get_sentiment_count', function(req, res, next) {
+      router.get('/get_sentiment_count/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Sentiment Count'));
           return
       })
 
-      router.get('/get_num_messages', function(req, res, next) {
+      router.get('/get_num_messages/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Number Messages'));
           return
       })
+  }
+
+  function composeObject( oldObj, cb ) {
+
+    let objArray = [];
+
+    for (var i = 0; i < oldObj.length; i++) {
+
+      console.log(">>>INPUT<<<")
+      console.log(oldObj[i])
+
+      newObject.day = moment(oldObj[i].created_at).format("ddd, MMMM D");
+      newObject.time = moment(oldObj[i].created_at).format("h:mm:ss a");
+      newObject.id = oldObj[i]._id;
+      newObject.text = oldObj[i].Body;
+      newObject.phoneNumber = oldObj[i].From;
+      newObject.city = oldObj[i].FromCity;
+      newObject.state = oldObj[i].FromState;
+      newObject.keywords = {};
+      newObject.concepts = {};
+      newObject.entities = {};
+      newObject.sentiment = "Positive";
+      objArray[i] = newObject;
+      console.log(">>>OUTPUT<<<")
+      console.log(objArray[i])
+
+    }
+    cb(objArray)
+
   }

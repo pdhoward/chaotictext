@@ -70,10 +70,19 @@ module.exports = function(router) {
       state: "NC",
       day: "thursday",
       time: "3.45 pm",
+      channel: ['twilio'],
+      partsOfSpeech: ['part1', 'part2', 'part3'],
+      badWords: ['word1, word2'],
+      watsonResponse: ['this is watson response'],
+      witResponse: ['this is wit.ai response'],
+      botResponse: ['this is the custom bot response'],
+      context: ['this is the context'],
+      intent: ['this is the intent'],
       keyword: ['keywords', 'keywords2', 'keywords3'],
       concept: ['concepts', 'concepts2', 'concepts3'],
       entity: ['entities', 'entities2', 'entities3'],
       sentiment: "Positive"
+
     };
 
     let textObject = {};

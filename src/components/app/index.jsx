@@ -6,7 +6,7 @@ export default ({ children }) => (
     <div className="app">
         {/* <a className='banner' href="https://github.com/pdhoward" target="_blank">ChaoticBots</a>*/}
         <div className="header">
-            <h2 className="header-text">ChaoticBots Text Analysis</h2>
+            <h2 className="header-text">ChaoticBots Console</h2>
             <img src={avatar} className="avatar" />
         </div>
         {children}

@@ -3,7 +3,9 @@ import classNames                           from 'classnames';
 import MessageHeader                        from './messageHeader';
 import axios                                from 'axios';
 import './style.scss';
-import { Sentiment, Entities, Concepts }    from './messageInfo';
+import { Sentiment, Entities, Concepts,
+         Channel, Parts, Watson, Wit, Bot,
+         Context, Intent, Bad}              from './messageInfo';
 import Check                                from 'img/check.svg';
 import CheckDone                            from 'img/check-done.svg';
 
@@ -18,7 +20,7 @@ export default class Message extends React.Component {
         this.state = {
             imgSrc: Check,
         };
-    }    
+    }
 
     handleOnClick = () => {
         this.setState({ imgSrc: CheckDone }, () => {
@@ -31,7 +33,9 @@ export default class Message extends React.Component {
       console.log(">>>>>>MESSAGE COMPONENT RENDERING<<<<<")
       console.log({props: this.props})
 
-        const { id, text, phoneNumber, city, state, day, time, keywords, concepts, entities, sentiment, archived_day, archived_time } = this.props;
+        const { id, text, phoneNumber, city, state, day, time, keywords,
+                concepts, entities, sentiment, archived_day, archived_time,
+                channel, parts, bad, watson, wit, bot, context, intent} = this.props;
         return (
             <div className="message">
                 <div className="message-left">
@@ -47,9 +51,17 @@ export default class Message extends React.Component {
                     <MessageBody text={text} keywords={keywords} />
                 </div>
                 <div className="message-right">
+                    <Channel channel={channel} />
+                    <Context context={context} />
+                    <Intent intent={intent} />
                     <Sentiment sentiment={sentiment} />
                     <Entities entities={entities} />
                     <Concepts concepts={concepts} />
+                    <Parts parts={parts} />
+                    <Bad bad={bad} />
+                    <Bot bot={bot} />
+                    <Watson watson={watson} />
+                    <Wit wit={wit} />
                 </div>
                 <img src={this.state.imgSrc} onClick={this.handleOnClick} className={classNames('check', { 'invisible': archived_day })}></img>
             </div>

@@ -28,6 +28,14 @@ export default ({ data, onArchive }) => {
         entities={m.entity}
         concepts={m.concept}
         sentiment={m.sentiment}
+        channel={m.channel}
+        parts={m.partsOfSpeech}
+        bad={m.badWords}
+        watson={m.watsonResponse}
+        wit={m.witResponse}
+        bot={m.botResponse}
+        context={m.context}
+        intent={m.intent}
         onArchive={onArchive}
       />
       );

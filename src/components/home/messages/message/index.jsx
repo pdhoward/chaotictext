@@ -11,27 +11,14 @@ import CheckDone                            from 'img/check-done.svg';
 export default class Message extends React.Component {
 
     constructor(props) {
-      
+
         console.log("---ENTERED MESSAGE COMPONENT--------")
 
         super(props);
         this.state = {
             imgSrc: Check,
         };
-    }
-    componentDidMount() {
-
-        console.log(">>>>>>>>>NOW IN MESSAGE<<<<<<<<<<<")
-        console.log(this.state)
-
-    }
-
-    componentDidUpdate(pastProps) {
-
-      console.log(">>>>>>MESSAGE COMPONENT UPDATED<<<<<")
-      console.log(this.pastProps)
-
-    }
+    }    
 
     handleOnClick = () => {
         this.setState({ imgSrc: CheckDone }, () => {
@@ -40,6 +27,10 @@ export default class Message extends React.Component {
     }
 
     render() {
+
+      console.log(">>>>>>MESSAGE COMPONENT RENDERING<<<<<")
+      console.log({props: this.props})
+
         const { id, text, phoneNumber, city, state, day, time, keywords, concepts, entities, sentiment, archived_day, archived_time } = this.props;
         return (
             <div className="message">

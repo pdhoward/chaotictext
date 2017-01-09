@@ -9,31 +9,7 @@ import { g, b, gr, r, y }    from '../color/chalk';
 
 const getDBText = Promise.promisify(dbText.get.bind(dbText));
 
-// stub
-const input = {
-  text: 'message stub in word api'
-  }
 
-var newObject = {
-  id: "1234",
-  text: "this is a test",
-  phoneNumber: "914-500-5391",
-  city: "Charlotte",
-  state: "NC",
-  day: "thursday",
-  time: "3.45 pm",
-  keywords: {},
-  concepts: {},
-  entities: {},
-  sentiment: "Positive"
-};
-
-var sendObject = {
-  messages: [],
-  totalPages: 1
-}
-
-sendObject.messages[0] = newObject;
 
     ////////////////////////////////////////////////////////////
     //////////////////mongo db functions //////////////////////
@@ -47,9 +23,8 @@ module.exports = function(router) {
         getDBText({})
           .then(function(result){
             composeObject( result, function(newObj) {
-
               let data = {}
-              data.messages = newObj;
+              data.messages = Array.from(newObj);
               data.totalPages = 1;
               res.json(data);
               next();
@@ -69,34 +44,50 @@ module.exports = function(router) {
 
       router.get('/get_sentiment_count/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Sentiment Count'));
-          return {data: 10}
+          res.json({data: 8});
           next()
       })
 
       router.get('/get_num_messages/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Number Messages'));
-          return {data: {num_messages: 8 }}
+          res.json({data: {num_messages: 8 }});
           next()
       })
   }
 
+  ////////////////////////////////////////////////////////////
+  /////// transform mongodb record for use in webapp ////////
+  //////////////////////////////////////////////////////////
+
   function composeObject( oldObj, cb ) {
     let objArray = [];
+
+    var newObject = {
+      id: "1234",
+      text: "this is a test",
+      phone_number: "914-500-5391",
+      city: "Charlotte",
+      state: "NC",
+      day: "thursday",
+      time: "3.45 pm",
+      keyword: ['keywords', 'keywords2', 'keywords3'],
+      concept: ['concepts', 'concepts2', 'concepts3'],
+      entity: ['entities', 'entities2', 'entities3'],
+      sentiment: "Positive"
+    };
+
+    let textObject = {};
 
     for (var i = 0; i < oldObj.length; i++) {
       newObject.day = moment(oldObj[i].created_at).format("ddd, MMMM D");
       newObject.time = moment(oldObj[i].created_at).format("h:mm:ss a");
       newObject.id = oldObj[i]._id;
       newObject.text = oldObj[i].Body;
-      newObject.phoneNumber = oldObj[i].From;
+      newObject.phone_number = oldObj[i].From;
       newObject.city = oldObj[i].FromCity;
       newObject.state = oldObj[i].FromState;
-      newObject.keywords = "test keywords";
-      newObject.concepts = "test concepts";
-      newObject.entities = "test entities";
-      newObject.sentiment = "Positive";
-      objArray[i] = newObject;
-
+      textObject = Object.assign({}, newObject);
+      objArray.push(textObject);
     }
     cb(objArray)
 

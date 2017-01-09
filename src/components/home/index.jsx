@@ -57,7 +57,6 @@ export default class Home extends Component {
 
     componentDidMount() {
         // this.socket.emit('get init incoming data', this.getPageNumber());
-        console.log("------COMPONENT MOUNTED - GET MESSAGES------")
         this.getSetMessages();
     }
 
@@ -163,6 +162,12 @@ export default class Home extends Component {
 
     render() {
         const currentPage = this.getPageNumber();
+
+        console.log('>>>MESSAGES COMPONENT RENDERING <<<<')
+        console.log({NumMessages: this.state.numMessages})
+        console.log({SentimentCount: this.state.sentimentCount})
+        console.log({Messages: this.state.Messages})
+
 
         return (
             <div className="home">

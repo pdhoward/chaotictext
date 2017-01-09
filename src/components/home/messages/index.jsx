@@ -5,11 +5,14 @@ import './style.scss';
 
 export default ({ data, onArchive }) => {
 
-  console.log(">>>>>ENTERED MESSAGES<<<<<<<<<")
+  console.log(">>>>>ENTERED MESSAGES COMPONENT<<<<<<<<<")
   console.log({data: data})
-  
+
     const messages = data.map((m) => {
-        return (
+
+      console.log({m: m})
+
+    return (
       <Message
         key={m.id}
         id={m.id}

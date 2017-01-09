@@ -44,13 +44,21 @@ module.exports = function(router) {
 
       router.get('/get_sentiment_count/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Sentiment Count'));
-          res.json({data: 8});
+          res.json([{label: 'positive',
+                     color: '#4A90E2',
+                     value: 6},
+                    {label: 'negative',
+                     color: '#734199',
+                     value: 12},
+                    {label: 'neutral',
+                     color: '#C7C7C6',
+                     value: 23}]);
           next()
       })
 
       router.get('/get_num_messages/:cnt', function(req, res, next) {
           console.log(g('DB Route Get Number Messages'));
-          res.json({data: {num_messages: 8 }});
+          res.json({num_messages: 8 });
           next()
       })
   }

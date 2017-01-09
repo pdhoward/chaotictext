@@ -66,10 +66,6 @@ export default class Home extends Component {
 
     getSetMessages() {
         axios.get(`/api/get_messages/${this.getPageNumber()}`).then(resp => {
-
-            console.log("---------GET MESSAGES ---------")
-            console.log({response: resp})
-
             this.setState({
                 messages: resp.data.messages,
                 totalPages: resp.data.totalPages,

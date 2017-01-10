@@ -24,7 +24,11 @@ var messageSchema = mongoose.Schema({
   AccountSid: String,
   From: String,
   created_at: { type: Date, default: Date.now },
-  ApiVersion: String
+  ApiVersion: String,
+  wordsDisallowed: Object,
+  alchemy: Object,
+  patterns: Object,
+  botResponse: Object
 
 
 });

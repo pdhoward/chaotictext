@@ -1,21 +1,11 @@
-
+'use strict';
 import badwords              from 'badwords/array';
 import bodyParser            from 'body-parser'
 import natural			         from 'natural';
+import ChatMessage           from '../db/schemas/Message';
+import moment                from 'moment';
+import uuid                  from 'node-uuid';
 import { g, b, gr, r, y }    from '../color/chalk';
-
-// stub
-const input = {
-  text: 'message stub in word api'
-  }
-
-const tokenCheck = new natural.WordTokenizer();
-const returnText = {};
-const tokenText = tokenCheck.tokenize(input.text);
-const tokenCnt = tokenText.length;
-var   chkDigit = -1;   // false word not found
-var   returnMessage = "Sorry. This text violates acceptable use policy "
-var   tokenWord = '';
 
     ////////////////////////////////////////////////////////////
     //////////////////Word Check API///////////////////////////
@@ -26,15 +16,38 @@ module.exports = function(router) {
       //evaluate a new message
       router.post('/message', function(req, res, next) {
 
-        console.log(g('Message API Route'));
+        const tokenCheck = new natural.WordTokenizer();
+        const tokenText = tokenCheck.tokenize(req.body.Body);
+        const tokenCnt = tokenText.length;
+        let   chkDigit = -1;   // false word not found
+        let   tokenWord = '';
+        let   wordArray = [];
 
-        for (var nn = 0; nn < tokenCnt; nn++) {
-          tokenWord = tokenText[nn];
+        console.log(g('Word API Route'));
+        console.log({tokens: tokenText})
+
+        for (var i = 0; i < tokenCnt; i++) {
+          tokenWord = tokenText[i];
           chkDigit = badwords.indexOf(tokenWord);
           if (chkDigit > -1) {
-            returnMessage = input.text
-            return callback(null, returnMessage);
-      }
-    }
+            wordArray.push(tokenWord);
+          }
+        }
+
+      let wordsDisallowed = {};
+      let created_at =      req.bag.transact_at;
+      let From =            req.body.From;
+      wordsDisallowed = Array.from(wordArray);
+
+      ChatMessage.findOneAndUpdate({From: From, created_at: created_at},
+                                   {$set: {wordsDisallowed: wordsDisallowed}},
+                                   {new: true}, function (err, data) {
+        if (err) {
+          console.log(r("Error Saving Words Disallowed to Message"))
+          return res.status(500).json({msg: 'internal server error'});
+        }
+        next()
+      })
+
   })
 }

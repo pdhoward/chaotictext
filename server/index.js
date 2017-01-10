@@ -13,6 +13,7 @@ import Cookies        from 'cookies';
 import cors           from 'cors';
 import favicon        from 'serve-favicon';
 import http           from 'http';
+import moment         from 'moment';
 import transport      from './config/gmail';
 import setup          from './config/setup';
 import secrets        from './config/secrets';
@@ -110,37 +111,45 @@ process.on('uncaughtException', function (er) {
 //////////////////// Register and Config Routes /////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-const messageRouter = express.Router();
-const wordRouter = express.Router();
-const alchemyRouter = express.Router();
-const patternRouter = express.Router();
-const dbRouter = express.Router();
-const analyticRouter = express.Router();
+const messageRouter =     express.Router();
+const wordRouter =        express.Router();
+const alchemyRouter =     express.Router();
+const patternRouter =     express.Router();
+const analyticRouter =    express.Router();
+const responseRouter =    express.Router();
 
 require('./routes/message_route')(messageRouter);
 require('./routes/word_route')(wordRouter);
 require('./routes/alchemy_route')(alchemyRouter);
 require('./routes/pattern_route')(patternRouter);
-require('./routes/db_route')(dbRouter);
 require('./routes/analytic_route')(analyticRouter);
+require('./routes/response_route')(responseRouter);
 
 //////////////////////////////////////////////////////////////////////////
 ///////////////////////////// API CATALOGUE /////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-
 app.use(function(req, res, next) {
+
+  let transact_at = Date.now();
+  req.bag = {};
+  req.bag.transact_at = transact_at;
+
   console.log("---------INCOMING DEBUG AND TRACE ----------")
   console.log({requrl: req.url})
   console.log({reqmethod: req.method})
   console.log({reqbody: req.body})
+  console.log({day: moment(req.bag.transact_at).format("ddd, MMMM D")})
+  console.log({time: moment(req.bag.transact_at).format("h:mm:ss a")})
+
   next()
 })
 
 ///////////////////////////////////////////////////////////////////
 app.use('/api', messageRouter);
-app.use('/api', dbRouter);
-//app.use('/api', wordRouter)
+app.use('/api', wordRouter)
+app.use('/api', analyticRouter);
+
 //app.use('/api', alchemyRouter)
 //app.use('/api', patternRouter)
 

@@ -70,26 +70,32 @@ module.exports = function(router) {
 
     var io = req.app.get('socketio');
     let textMessage = new ChatMessage(req.body);
-    textMessage.created_at = req.bag.transact_at;
 
    // If session context exists, need to use it for next iteration
    // It means we've already launched a discussion
     if (req.session.context) {
-        message.context = req.session.context;
-        req.session.count++;
+      message.context = req.session.context;
+      req.session.count++;
     };
 
-    console.log(g('Message API Route'));
-    console.log({body: textMessage});
+    console.log(g('Response API Route'));
 
-    textMessage.save(function (err, data){
-      if (err) {
-        console.log(r("Error Saving Text Message to Mongodb"))
-        return res.status(500).json({msg: 'internal server error'});
-      }
+    client.messages.create({
+        to: "+19145005391",
+        from: "+19148195104",
+        body: "Hello Lee Anne - Will you join me here my love for dinner, dancing and a show?",
+        mediaUrl: "http://static.eharmony.com/files/us/images/landing/czech-republic-prague.jpg",
+//        mediaUrl: "https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
+      }, function(err, message) {
+        console.log(message.sid);
+      });
 
-      next()
-    })
+    console.log({client: client})
 
+    res.setHeader('Content-Type', 'text/xml')
+    res.status(200).send({ text: "chaoticbots rule" });
+
+
+   return;
  })
 }

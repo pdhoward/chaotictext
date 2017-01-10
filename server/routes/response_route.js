@@ -18,44 +18,6 @@ const workspace =       process.env.WORKSPACE_ID || 'workspace-id';
 
 const client = require('twilio')(accountSID, accountToken);
 
-// watson conversation parameters
-const watson =             require( 'watson-developer-cloud' );
-
-const conversation = watson.conversation( {
-  url: 'https://gateway.watsonplatform.net/conversation/api',
-  username: process.env.CONVERSATION_USERNAME || '<username>',
-  password: process.env.CONVERSATION_PASSWORD || '<password>',
-  version_date: '2016-07-11',
-  version: 'v1'
-} );
-
-const message = {
-  workspace_id: workspace,
-  input: {
-    text: ''
-  },
-  context: {},
-  alternate_intents: false,
-  entities: [],
-  intents: [],
-  output: {}
-}
-
-const buildMessageToSend = {
-  id: '',
-  channelID: '',
-  text: '',
-  user: '',
-  time: Number
-
-}
-
-const watsonUserID = {
-  username: 'Watson',
-  socketID: '/#testid'
-}
-
-var buildID = '';
 
 ////////////////////////////////////////////////////////////
 //////////////////Message APIs ////////////////////////////
@@ -65,18 +27,8 @@ module.exports = function(router) {
 
   router.use(bodyParser.json());
 
-  //evaluate a new message
   router.post('/message', function(req, res, next) {
-
     var io = req.app.get('socketio');
-    let textMessage = new ChatMessage(req.body);
-
-   // If session context exists, need to use it for next iteration
-   // It means we've already launched a discussion
-    if (req.session.context) {
-      message.context = req.session.context;
-      req.session.count++;
-    };
 
     console.log(g('Response API Route'));
 
@@ -84,18 +36,16 @@ module.exports = function(router) {
         to: "+19145005391",
         from: "+19148195104",
         body: "Hello Lee Anne - Will you join me here my love for dinner, dancing and a show?",
-        mediaUrl: "http://static.eharmony.com/files/us/images/landing/czech-republic-prague.jpg",
-//        mediaUrl: "https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
+        mediaUrl: "http://static.eharmony.com/files/us/images/landing/czech-republic-prague.jpg"
       }, function(err, message) {
         console.log(message.sid);
       });
 
-    console.log({client: client})
-
     res.setHeader('Content-Type', 'text/xml')
     res.status(200).send({ text: "chaoticbots rule" });
+    io.emit('incoming data', get_messages())
 
+   next();
 
-   return;
  })
 }

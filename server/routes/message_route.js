@@ -2,13 +2,12 @@
 //////////////////////////////////////////////////////////////////////////
 ////////////////////Initial Main Message Route  /////////////////////////
 ////////////////////////////////////////////////////////////////////////
-
-import ChatMessage                from '../db/schemas/Message';
+import Promise                    from 'bluebird';
+import dbText                     from '../api/dbText';
 import bodyParser                 from 'body-parser';
-import moment                     from 'moment';
-import uuid                       from 'node-uuid';
-import vcapServices               from 'vcap_services';
 import { g, b, gr, r, y }         from '../color/chalk';
+
+const putDBText = Promise.promisify(dbText.put.bind(dbText));
 
 
 ////////////////////////////////////////////////////////////
@@ -21,21 +20,16 @@ module.exports = function(router) {
 
   //evaluate a new message
   router.post('/message', function(req, res, next) {
-
-    var io = req.app.get('socketio');
-    let textMessage = new ChatMessage(req.body);
-    textMessage.created_at = req.bag.transact_at;
+    let params = {};
+    params.body = req.body;
+    params.bag  = req.bag;
 
     console.log(g('Message API Route'));
-  
-    textMessage.save(function (err, data){
-      if (err) {
-        console.log(r("Error Saving Text Message to Mongodb"))
-        return res.status(500).json({msg: 'internal server error'});
-      }
 
-      next()
-    })
+    putDBText(params)
+        .then(function(result){
+              next();
+            });
 
- })
+      })
 }

@@ -20,7 +20,7 @@ const client = require('twilio')(accountSID, accountToken);
 
 
 ////////////////////////////////////////////////////////////
-//////////////////Message APIs ////////////////////////////
+//////////////// RESPONSE EVENTS //////////////////////////
 //////////////////////////////////////////////////////////
 
 module.exports = function(router) {
@@ -43,7 +43,7 @@ module.exports = function(router) {
 
     res.setHeader('Content-Type', 'text/xml')
     res.status(200).send({ text: "chaoticbots rule" });
-    io.emit('incoming data', get_messages())
+    io.emit('incoming data');
 
    next();
 

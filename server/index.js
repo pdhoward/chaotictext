@@ -174,4 +174,6 @@ io.on('connection', function(socket) {
   console.log("someone just joined sockets")
 })
 
+app.set('socketio', io);
+
 console.log("running on port " + port);

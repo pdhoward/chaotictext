@@ -145,10 +145,11 @@ app.use(function(req, res, next) {
 ///////////////////////////////////////////////////////////////////
 app.use('/api', messageRouter);
 app.use('/api', wordRouter)
+app.use('/api', alchemyRouter)
 app.use('/api', responseRouter)
 app.use('/api', analyticRouter);
 
-//app.use('/api', alchemyRouter)
+
 //app.use('/api', patternRouter)
 
 //app.use('/api', analyticRouter);

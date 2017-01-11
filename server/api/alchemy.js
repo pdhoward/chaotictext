@@ -1,5 +1,6 @@
 
 'use strict';
+require( 'dotenv' ).config( {silent: true} );
 
 //////////////////////////////////////////////////////////////////////////
 ////////////  Alchemy used for text message analysis    /////////////////
@@ -37,5 +38,22 @@ module.exports = {
         callback(null, cities.length > 0 ? cities[0] : null);
       }
     })
-  }
+  },
+
+  //////////////////////FINISH THIS//////////////////////////
+  
+  extractRelations: function(params, callback) {
+    params.language = 'english';
+    alchemyLanguage.relations(params, function(err, response) {
+
+      if (err) {
+        callback(err);
+      }
+      else {
+        console.log((JSON,stringify))
+      }
+    })
+  },
+
+
 };

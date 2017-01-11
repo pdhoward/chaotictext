@@ -1,11 +1,13 @@
 'use strict';
+
+import Promise               from 'bluebird';
+import dbText                from '../api/dbText';
 import badwords              from 'badwords/array';
 import bodyParser            from 'body-parser'
 import natural			         from 'natural';
-import ChatMessage           from '../db/schemas/Message';
-import moment                from 'moment';
-import uuid                  from 'node-uuid';
 import { g, b, gr, r, y }    from '../color/chalk';
+
+const updateDBText = Promise.promisify(dbText.update.bind(dbText));
 
     ////////////////////////////////////////////////////////////
     //////////////////Word Check API///////////////////////////
@@ -24,7 +26,6 @@ module.exports = function(router) {
         let   wordArray = [];
 
         console.log(g('Word API Route'));
-        console.log({tokens: tokenText})
 
         for (var i = 0; i < tokenCnt; i++) {
           tokenWord = tokenText[i];
@@ -39,15 +40,12 @@ module.exports = function(router) {
       let From =            req.body.From;
       wordsDisallowed = Array.from(wordArray);
 
-      ChatMessage.findOneAndUpdate({From: From, created_at: created_at},
-                                   {$set: {wordsDisallowed: wordsDisallowed}},
-                                   {new: true}, function (err, data) {
-        if (err) {
-          console.log(r("Error Saving Words Disallowed to Message"))
-          return res.status(500).json({msg: 'internal server error'});
-        }
-        next()
-      })
+      updateDBText({From: From, created_at: created_at},
+                   {$set: {wordsDisallowed: wordsDisallowed}},
+                   {new: true})
+      .then(function(result){
 
+        next();
+    });
   })
 }

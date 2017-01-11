@@ -12,7 +12,7 @@ const getDBText = Promise.promisify(dbText.get.bind(dbText));
 
 
     ////////////////////////////////////////////////////////////
-    //////////////////mongo db functions //////////////////////
+    ///////// various db function to support analytics ////////
     //////////////////////////////////////////////////////////
 
 module.exports = function(router) {
@@ -22,13 +22,15 @@ module.exports = function(router) {
 
         getDBText({})
           .then(function(result){
-            composeObject( result, function(newObj) {
-              let data = {}
-              data.messages = Array.from(newObj);
-              data.totalPages = 1;
-              res.json(data);
-              next();
-            });
+            sortObjects( result, function(sortedObject){
+              composeObjects( sortedObject, function(newObj) {
+                let data = {}
+                data.messages = Array.from(newObj);
+                data.totalPages = 1;
+                res.json(data);
+                next();
+              });
+            })
           })
         })
 
@@ -62,12 +64,23 @@ module.exports = function(router) {
           next()
       })
   }
+  ////////////////////////////////////////////////////////////
+  /////// sort text messages in ascending date order ////////
+  //////////////////////////////////////////////////////////
+  function sortObjects( textObjects, cb) {
+
+    textObjects.sort(function (a, b) {
+      return b.created_at - a.created_at;
+    });
+
+    cb(textObjects)
+  }
 
   ////////////////////////////////////////////////////////////
   /////// transform mongodb record for use in webapp ////////
   //////////////////////////////////////////////////////////
 
-  function composeObject( oldObj, cb ) {
+  function composeObjects( oldObj, cb ) {
     let objArray = [];
 
     var newObject = {

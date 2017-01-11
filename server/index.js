@@ -138,10 +138,7 @@ app.use(function(req, res, next) {
   console.log("---------INCOMING DEBUG AND TRACE ----------")
   console.log({requrl: req.url})
   console.log({reqmethod: req.method})
-  console.log({reqbody: req.body})
-  console.log({day: moment(req.bag.transact_at).format("ddd, MMMM D")})
-  console.log({time: moment(req.bag.transact_at).format("h:mm:ss a")})
-
+  console.log({reqbody: req.body.Body})
   next()
 })
 

@@ -38,17 +38,15 @@ module.exports = {
 
   },
 
-  update: function(params, cb) {
+  update: function(params1, params2, params3, cb) {
 
-    textMessage.findOneAndUpdate(params, function (err, response) {
+    textMessages.findOneAndUpdate(params1, params2, params3, function (err, response) {
       if (err) {
         console.log(r("Error When Updating the Message Text"))
         return cb(err);
       }
       return cb(err, response);
     })
-
-
   }
 
   // fetch users ideas from db in the same geographic are as active user

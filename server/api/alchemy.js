@@ -27,7 +27,9 @@ function onlyName(entity) {
 module.exports = {
   //  extract the name of the city mentioned in the text
   extractCity: function(params, callback) {
+
     params.language = 'english';
+
     alchemyLanguage.entities(params, function(err, response) {
 
       if (err) {
@@ -41,16 +43,62 @@ module.exports = {
   },
 
   //////////////////////FINISH THIS//////////////////////////
-  
+
   extractRelations: function(params, callback) {
-    params.language = 'english';
-    alchemyLanguage.relations(params, function(err, response) {
+
+    let arg = {};
+    arg.text = params;
+
+    alchemyLanguage.relations(arg, function(err, response) {
+      if (err) {
+        callback(err);
+      }
+      else {
+        callback(null, response);
+      }
+    })
+  },
+
+  extractEntities: function(params, callback) {
+
+    let arg = {};
+    arg.text = params;
+
+    alchemyLanguage.entities(arg, function(err, response) {
+      if (err) {
+        callback(err);
+      }
+      else {
+        callback(null, response);
+      }
+    })
+  },
+  extractKeyWords: function(params, callback) {
+
+    let arg = {};
+    arg.text = params;
+
+    alchemyLanguage.keywords(arg, function(err, response) {
 
       if (err) {
         callback(err);
       }
       else {
-        console.log((JSON,stringify))
+        callback(null, response);
+      }
+    })
+  },
+  extractConcepts: function(params, callback) {
+
+    let arg = {};
+    arg.text = params;
+
+    alchemyLanguage.concepts(arg, function(err, response) {
+      if (err) {
+        callback(err);
+      }
+      else {
+        callback(null, response);
       }
     })
   },

@@ -32,6 +32,8 @@ module.exports = function(router) {
 
     console.log(g('Response API Route'));
 
+    // Work to do on twilio text responses
+/*
     client.messages.create({
         to: "+19145005391",
         from: "+19148195104",
@@ -40,7 +42,7 @@ module.exports = function(router) {
       }, function(err, message) {
         console.log(message.sid);
       });
-
+*/
     res.setHeader('Content-Type', 'text/xml')
     res.status(200).send({ text: "chaoticbots rule" });
     io.emit('incoming data');

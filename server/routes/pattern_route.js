@@ -1,33 +1,20 @@
 'use strict';
 import bodyParser                 from 'body-parser'
 import natural                    from 'natural';
+import intents                    from '../db/initialize/getintents';
 import { g, b, gr, r, y }         from '../color/chalk';
 
-
-
 ////////////////////////////////////////////////////////////
-///////////////   NLP Message Analysis        /////////////
+////////        NLP Message Analysis          /////////////
+/////// Tokenize and stem the text message - //////////////
+//////    Attempt to Match on patterns       /////////////
 //////////////////////////////////////////////////////////
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////
-/////// Tokenize and stem the text message - permit pattern matching //////
-//////////////////////////////////////////////////////////////////////////
-
 
 const tokenCheck = new natural.WordTokenizer();
 // stub for testig
 
-const input = {
-  text: 'this is a test text for testing the nlp process'
-}
-
-const testText = {
-  text: 'So this is another test text with an entirely new string'
+const test = {
+  text: 'test - ship my product now!'
 }
 
 module.exports = function(router) {
@@ -37,17 +24,19 @@ module.exports = function(router) {
   //evaluate a new message
   router.post('/message', function(req, res, next) {
 
-      // establish string for NLP pattern matching
-        natural.PorterStemmer.attach();
-
+      // bind natural module and function
+      natural.PorterStemmer.attach();
+      let textMessage = req.body.Body;
      // tokenize the text
 
-      const tokenIdea = input.text.tokenizeAndStem();
-      const diff = natural.JaroWinklerDistance(input.text, testText.text)
+      const tokenMessage = textMessage.tokenizeAndStem();
+      const diff = natural.JaroWinklerDistance(textMessage, test.text)
 
-      console.log(g('Message API Route'));
-      console.log({tokenIdea: tokenIdea})
+      console.log(g('Message Pattern Route'));
+      console.log({token: tokenMessage})
       console.log({diff: diff})
+
+      next()
 
     })
   }

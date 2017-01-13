@@ -40,13 +40,7 @@ module.exports = function(router) {
                   console.log(g('KEYWORDS-----------------'));
                   console.log({keywords: JSON.stringify(result)});
 
-                  extractConcepts(req.body.Body)
-                    .then(function(result) {
-                      console.log(g('CONCEPTS-----------------'));
-                      console.log({concepts: JSON.stringify(result)});
-
-                      next()
-                })
+                next()              
             })
           })
         })

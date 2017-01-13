@@ -1,3 +1,5 @@
+'use strict';
+
 import bodyParser            from 'body-parser'
 import Promise               from 'bluebird';
 import alchemy               from '../api/alchemy';

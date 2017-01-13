@@ -1,4 +1,4 @@
-
+'use strict';
 
 import Promise               from 'bluebird';
 import dbText                from '../api/dbText';

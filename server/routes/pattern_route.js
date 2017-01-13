@@ -33,8 +33,19 @@ module.exports = function(router) {
       const diff = natural.JaroWinklerDistance(textMessage, test.text)
 
       console.log(g('Message Pattern Route'));
+      console.log({message: textMessage})
       console.log({token: tokenMessage})
-      console.log({diff: diff})
+      console.log(g('Pattern Matches'));
+      
+      intents.array.forEach(script => {
+        const diff = natural.JaroWinklerDistance(textMessage, script.script);
+        if (diff > .7) {
+          console.log({intent: script.intent})
+          console.log({match: script.script})
+          console.log({diff: diff})
+        }
+
+      })
 
       next()
 

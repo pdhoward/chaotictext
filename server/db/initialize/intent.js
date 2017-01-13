@@ -68,6 +68,18 @@ const configureIntents = [
     botConfig: {}
   },
   {
+    intent: "ship",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'ship now',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'I am here to help you ship',
+    botConfig: {}
+  },
+  {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
     script: 'buy a product',

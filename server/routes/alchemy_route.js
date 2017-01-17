@@ -27,20 +27,39 @@ module.exports = function(router) {
 
       extractRelations(req.body.Body)
         .then(function(result) {
+
           console.log(g('RELATIONS-----------------'));
-          console.log({relations: JSON.stringify(result)});
+          result.relations.map(function(text){
+            console.log({sentence: JSON.stringify(text.sentence)});
+            console.log({subject: JSON.stringify(text.subject)});
+            console.log({action: JSON.stringify(text.action)});
+            console.log({object: JSON.stringify(text.object)});
+          })
+
 
           extractEntities(req.body.Body)
             .then(function(result) {
+
               console.log(g('ENTITIES-----------------'));
-              console.log({entities: JSON.stringify(result)});
+
+              result.entities.map(function(text){
+                console.log({entity: JSON.stringify(text.text)});
+                console.log({type: JSON.stringify(text.type)});
+                console.log({relevance: JSON.stringify(text.relevance)});
+                console.log({insight: JSON.stringify(text.disambiguated)});
+              })
 
               extractKeyWords(req.body.Body)
                 .then(function(result) {
                   console.log(g('KEYWORDS-----------------'));
-                  console.log({keywords: JSON.stringify(result)});
 
-                next()              
+                  result.keywords.map(function(text){
+                    console.log({keyword: JSON.stringify(text.text)});
+                    console.log({relevance: JSON.stringify(text.relevance)});
+                  })
+
+                next()
+                          
             })
           })
         })

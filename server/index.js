@@ -115,6 +115,7 @@ const messageRouter =     express.Router();
 const wordRouter =        express.Router();
 const alchemyRouter =     express.Router();
 const patternRouter =     express.Router();
+const classifyRouter =    express.Router();
 const analyticRouter =    express.Router();
 const responseRouter =    express.Router();
 
@@ -122,6 +123,7 @@ require('./routes/message_route')(messageRouter);
 require('./routes/word_route')(wordRouter);
 require('./routes/alchemy_route')(alchemyRouter);
 require('./routes/pattern_route')(patternRouter);
+require('./routes/classify_route')(classifyRouter);
 require('./routes/analytic_route')(analyticRouter);
 require('./routes/response_route')(responseRouter);
 
@@ -147,13 +149,9 @@ app.use('/api', messageRouter);
 app.use('/api', wordRouter)
 app.use('/api', alchemyRouter)
 app.use('/api', patternRouter)
+app.use('/api', classifyRouter)
 app.use('/api', responseRouter)
 app.use('/api', analyticRouter);
-
-
-//app.use('/api', patternRouter)
-
-//app.use('/api', analyticRouter);
 
 app.use('/build', express.static(buildFolder));
 

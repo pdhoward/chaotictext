@@ -1,4 +1,3 @@
-
 'use strict';
 require( 'dotenv' ).config( {silent: true} );
 //////////////////////////////////////////////////////////////////////////
@@ -9,8 +8,8 @@ require( 'dotenv' ).config( {silent: true} );
 
 import natural                     from 'natural';
 
-var fileId = process.env.CHAOTIC_CLIENT_ID + '.json';
-var keepClassifier = null;
+var fileId =          process.env.CHAOTIC_CLIENT_ID + '.json';
+var keepClassifier =  null;
 
 module.exports = {
   get: function({}, cb) {

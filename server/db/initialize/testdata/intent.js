@@ -80,6 +80,30 @@ const configureIntents = [
     botConfig: {}
   },
   {
+    intent: "ship",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'ship product',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'I am here to help you ship',
+    botConfig: {}
+  },
+  {
+    intent: "ship",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'ship',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'I am here to help you ship',
+    botConfig: {}
+  },
+  {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
     script: 'buy a product',
@@ -118,13 +142,13 @@ const configureIntents = [
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'help me buy',
+    script: 'buy product',
     tokens: [],
     entities: [],
     keywords: [],
     actions: [],
     confidence: 80,
-    botGreeting: 'I am here to help',
+    botGreeting: 'I can help you shop',
     botConfig: {}
   },
   {
@@ -136,13 +160,37 @@ const configureIntents = [
     keywords: [],
     actions: [],
     confidence: 80,
-    botGreeting: 'I can help you buy',
+    botGreeting: 'I can help you shop',
+    botConfig: {}
+  },
+  {
+    intent: "buy",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'help me buy',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'I am here to help',
     botConfig: {}
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
     script: 'need to make a payment',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'I can help you pay',
+    botConfig: {}
+  },
+  {
+    intent: "pay",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'pay',
     tokens: [],
     entities: [],
     keywords: [],
@@ -190,7 +238,7 @@ const configureIntents = [
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'pay',
+    script: 'pay this now',
     tokens: [],
     entities: [],
     keywords: [],
@@ -203,6 +251,18 @@ const configureIntents = [
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
     script: 'there is something wrong with my account',
+    tokens: [],
+    entities: [],
+    keywords: [],
+    actions: [],
+    confidence: 80,
+    botGreeting: 'You have a problem with your account. How can I help?',
+    botConfig: {}
+  },
+  {
+    intent: "dispute",
+    id: '${Date.now()}${uuid.v4()}',
+    script: 'help me',
     tokens: [],
     entities: [],
     keywords: [],

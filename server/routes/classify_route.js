@@ -12,10 +12,12 @@ import { g, b, gr, r, y }         from '../color/chalk';
 
 const classifier = new natural.BayesClassifier();
 
+/*
 natural.BayesClassifier.load('classifier.json', null, function(err, classifier) {
     console.log('Classification data retrieved');
-  
+
 });
+*/
 
 module.exports = function(router) {
 

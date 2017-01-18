@@ -35,7 +35,6 @@ function traindata(cb) {
 function savedata(parm, cb) {
   classifier.save(parm, function(err, classifier) {
       console.log("Saving Completed")
-      console.log({classifier: JSON.stringify(classifier)})
       return cb()
   });
 
@@ -44,7 +43,6 @@ function savedata(parm, cb) {
 module.exports.getClassifications = function () {
       Classifications.find({}).exec(function (err, data){
         if (data.length === 0){
-
             mapdata(function(){
               traindata(function(){
                 var parm = fileId;
@@ -53,26 +51,24 @@ module.exports.getClassifications = function () {
 
                   natural.BayesClassifier.load(fileId, null, function(err, classifier) {
                       if (err) { console.log({err: err})}
-
-                      console.log('Classification data retrieved');
+                      console.log('Classification data retrieved and loaded');
 
                   });
                   return
                 })
               })
             })
-
-      }
-      else {
-        data.map(function(document){
-          classifier.addDocument(document.text, document.class);
-        })
-        classifier.train();
-        classifier.save('classifier.json', function(err, classifier) {
-            console.log("DB CLASSIFIER SAVED")
-        });
-        console.log(g('Classifier initialized from db '))
-        return
-      }
-  })
+          }
+          else {
+            data.map(function(document){
+              //classifier.addDocument(document.text, document.class);
+              // need to extract client classifier  -- already trained
+            })
+            natural.BayesClassifier.load(fileId, null, function(err, classifier) {
+                if (err) { console.log({err: err})}
+                console.log(g('Classifier initialized from db '))
+            });
+          return
+        }
+      })
 }

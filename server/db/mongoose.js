@@ -1,3 +1,13 @@
+'use strict';
+
+
+///////////////////////////////////////////////////////////////////////
+////////   connect to our document store and initialize //////////////
+///////    channels - test path    intents - topic id   //////////////
+///////    classifier - npm natural topic id            //////////////
+//////////////////////////////////////////////////////////////////////
+
+
 import mongoose                   from 'mongoose';
 import initializeChannels         from './initialize/getchannels';
 import initializeIntents          from './initialize/getintents';

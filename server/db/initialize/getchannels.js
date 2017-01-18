@@ -4,7 +4,7 @@
 import Channel                     from '../schemas/Channel';
 import mongoose                   from 'mongoose';
 import uuid                       from 'node-uuid';
-import configureChannels          from './channels';
+import configureChannels          from './testdata/channels';
 import { g, b, gr, r, y }         from '../../color/chalk';
 
 const limit = 1;

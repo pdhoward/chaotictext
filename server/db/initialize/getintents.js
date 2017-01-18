@@ -8,7 +8,7 @@
 import Intent                      from '../schemas/Intent';
 import mongoose                    from 'mongoose';
 import uuid                        from 'node-uuid';
-import configureIntents            from './intent';
+import configureIntents            from './testdata/intent';
 import { g, b, gr, r, y }          from '../../color/chalk';
 
 module.exports.array = [];

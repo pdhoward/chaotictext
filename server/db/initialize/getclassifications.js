@@ -5,16 +5,16 @@
 //////////////////////////////////////////////////////////////////////
 require( 'dotenv' ).config( {silent: true} );
 
-import Classifications             from '../schemas/Classification';
-import mongoose                    from 'mongoose';
+import natural                     from 'natural';
 import uuid                        from 'node-uuid';
 import configureClassifications    from './testdata/classifications';
-import natural                     from 'natural';
+import Classifications             from '../schemas/Classification';
 import { g, b, gr, r, y }          from '../../color/chalk';
 
 var fileId = process.env.CHAOTIC_CLIENT_ID + '.json';
 
 var classArray = [];
+
 const classifier = new natural.BayesClassifier();
 
 function mapdata(cb){
@@ -40,6 +40,7 @@ function savedata(parm, cb) {
 
 }
 
+
 module.exports.getClassifications = function () {
       Classifications.find({}).exec(function (err, data){
         if (data.length === 0){
@@ -48,12 +49,6 @@ module.exports.getClassifications = function () {
                 var parm = fileId;
                 savedata(parm, function(){
                   console.log(g('Classifier initialized from test file db/initialize/classifications '))
-
-                  natural.BayesClassifier.load(fileId, null, function(err, classifier) {
-                      if (err) { console.log({err: err})}
-                      console.log('Classification data retrieved and loaded');
-
-                  });
                   return
                 })
               })

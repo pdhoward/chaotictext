@@ -3,16 +3,11 @@
 var mongoose = require('mongoose');
 
 var classificationSchema = mongoose.Schema({
-  classifier: {
-    classFeatures: Object,
-    classTotals: Object,
-    totalExamples: Number,
-    smoothing: Number
-  },
+  classifier: Object,
   docs: Array,
   features: Object,
   stemmer: Object,
-  lastAdded: 12,
+  lastAdded: Number,
   events: Object
 });
 

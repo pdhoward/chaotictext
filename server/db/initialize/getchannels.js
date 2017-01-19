@@ -1,7 +1,7 @@
 'use strict';
 
 // Channel is the schema
-import Channel                     from '../schemas/Channel';
+import Channel                    from '../schemas/Channel';
 import mongoose                   from 'mongoose';
 import uuid                       from 'node-uuid';
 import configureChannels          from './testdata/channels';

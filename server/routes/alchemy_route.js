@@ -9,12 +9,11 @@ import { g, b, gr, r, y }    from '../color/chalk';
     ////////////////// Deep Text Message Analysis /////////////
     //////////////////////////////////////////////////////////
 
-const extractCity = Promise.promisify(alchemy.extractCity.bind(alchemy));
-
-const extractRelations = Promise.promisify(alchemy.extractRelations.bind(alchemy));
-const extractConcepts = Promise.promisify(alchemy.extractConcepts.bind(alchemy));
-const extractKeyWords = Promise.promisify(alchemy.extractKeyWords.bind(alchemy));
-const extractEntities = Promise.promisify(alchemy.extractEntities.bind(alchemy));
+const extractCity =       Promise.promisify(alchemy.extractCity.bind(alchemy));
+const extractRelations =  Promise.promisify(alchemy.extractRelations.bind(alchemy));
+const extractConcepts =   Promise.promisify(alchemy.extractConcepts.bind(alchemy));
+const extractKeyWords =   Promise.promisify(alchemy.extractKeyWords.bind(alchemy));
+const extractEntities =   Promise.promisify(alchemy.extractEntities.bind(alchemy));
 
 module.exports = function(router) {
 
@@ -59,7 +58,7 @@ module.exports = function(router) {
                   })
 
                 next()
-                          
+
             })
           })
         })

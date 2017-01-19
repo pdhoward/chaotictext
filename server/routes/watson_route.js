@@ -4,6 +4,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 import ChatMessage                from '../db/schemas/Message';
+import watsonResponse             from '../db/schemas/WatsonResponse';
 import bodyParser                 from 'body-parser';
 import moment                     from 'moment';
 import uuid                       from 'node-uuid';

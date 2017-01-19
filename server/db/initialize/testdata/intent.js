@@ -10,315 +10,133 @@ const configureIntents = [
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'i need to ship something',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'i need to ship something'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'i need to ship a product',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'i need to ship a product'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'need to fedex',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'need to fedex'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'help me ship',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'help me ship'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'ship this please',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'ship this please'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'ship now',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'ship now'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'ship product',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'ship product'
   },
   {
     intent: "ship",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'ship',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help you ship',
-    botConfig: {}
+    script: 'ship'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'buy a product',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help with you buy',
-    botConfig: {}
+    script: 'buy a product'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'want to purchase something',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you purchase something',
-    botConfig: {}
+    script: 'want to purchase something'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'trying to find a product',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you shop',
-    botConfig: {}
+    script: 'trying to find a product'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'buy product',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you shop',
-    botConfig: {}
+    script: 'buy product'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'buy',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you shop',
-    botConfig: {}
+    script: 'buy'
   },
   {
     intent: "buy",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'help me buy',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I am here to help',
-    botConfig: {}
+    script: 'help me buy'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'need to make a payment',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you pay',
-    botConfig: {}
+    script: 'need to make a payment'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'pay',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you pay',
-    botConfig: {}
+    script: 'pay'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'pay please',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help with that',
-    botConfig: {}
+    script: 'pay please'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'I need to pay on my account',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you process a payment',
-    botConfig: {}
+    script: 'I need to pay on my account'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'I want to pay my bill',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you with your bill',
-    botConfig: {}
+    script: 'I want to pay my bill'
   },
   {
     intent: "pay",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'pay this now',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help with that',
-    botConfig: {}
+    script: 'pay this now'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'there is something wrong with my account',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'You have a problem with your account. How can I help?',
-    botConfig: {}
+    script: 'there is something wrong with my account'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'help me',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'You have a problem with your account. How can I help?',
-    botConfig: {}
+    script: 'help me'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'i need help resolving an issue',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'How can I help?',
-    botConfig: {}
+    script: 'i need help resolving an issue'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'my account is screwed up',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'Let me help you with that',
-    botConfig: {}
+    script: 'my account is screwed up'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'Who can I speak with to fix my account?',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help!',
-    botConfig: {}
+    script: 'Who can I speak with to fix my account?'
   },
   {
     intent: "dispute",
     id: '${Date.now()}${uuid.v4()}',
-    script: 'i have an issue with my account',
-    tokens: [],
-    entities: [],
-    keywords: [],
-    actions: [],
-    confidence: 80,
-    botGreeting: 'I can help you with any issues',
-    botConfig: {}
-  },
+    script: 'i have an issue with my account'    
+  }
 ]
 
 module.exports = configureIntents;

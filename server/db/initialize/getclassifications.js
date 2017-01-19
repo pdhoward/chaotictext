@@ -7,8 +7,8 @@ require( 'dotenv' ).config( {silent: true} );
 
 import natural                     from 'natural';
 import uuid                        from 'node-uuid';
-import configureClassifications    from './testdata/classifications';
-import Classifications             from '../schemas/Classification';
+import configureClassifications    from './testdata/intent';
+import Classifications             from '../schemas/Intent';
 import { g, b, gr, r, y }          from '../../color/chalk';
 
 var fileId = process.env.CHAOTIC_CLIENT_ID + '.json';
@@ -20,7 +20,7 @@ const classifier = new natural.BayesClassifier();
 function mapdata(cb){
   classArray = configureClassifications;
   classArray.map(function(document){
-    classifier.addDocument(document.text, document.class);
+    classifier.addDocument(document.script, document.intent);
       })
   console.log("Mapping Completed")
   cb()

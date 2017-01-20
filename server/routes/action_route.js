@@ -4,40 +4,18 @@ import Promise               from 'bluebird';
 import bodyParser            from 'body-parser'
 import natural			         from 'natural';
 import dbText                from '../api/dbText';
-import watsonResponse        from '../db/schemas/WatsonResponse';
+import classify              from '../api/classify';
+import watson                from '../api/watson';
 import configureAgents       from '../config/chaotic'
 import { g, b, gr, r, y }    from '../color/chalk';
-import watson                from 'watson-developer-cloud';
 
+
+const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
-const workspace =       process.env.WORKSPACE_ID || 'workspace-id';
 
-const conversation =    watson.conversation( {
-  url: 'https://gateway.watsonplatform.net/conversation/api',
-  username: process.env.CONVERSATION_USERNAME || '<username>',
-  password: process.env.CONVERSATION_PASSWORD || '<password>',
-  version_date: '2016-07-11',
-  version: 'v1'
-  } );
 
 var chaotic = [];
 
-const message = {
-  workspace_id: workspace,
-  input: {
-    text: ''
-  },
-  context: {},
-  alternate_intents: false,
-  entities: [],
-  intents: [],
-  output: {}
-}
-
-const watsonUserID = {
-  username: 'Watson',
-  socketID: '/#testid'
-}
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -57,16 +35,18 @@ module.exports = function(router) {
         let created_at =      req.bag.transact_at;
         let From =            req.body.From;
         let intent =          req.bag.state.intent;
-        chaotic =             configureAgents.filter(function (obj){
-          return obj.intent == intent;
-        })
+        req.bag.state.body =  req.body.Body
 
         // session status
-
-        if (req.session.context) {
-          message.context = req.session.context;
-          req.session.count++;
+        if (req.bag.state.watsonResponse.context) {
+          req.bag.state.count++;
         };
+
+        // retrieve agent configuration based on intent
+
+        chaotic =  configureAgents.filter(function (obj){
+          return obj.intent == intent;
+        })
 
         console.log(g('TEST COMPLETED - Agent Contacted'));
         console.log({intent: intent});
@@ -74,21 +54,32 @@ module.exports = function(router) {
 
         let x = getRandomInt(1, 3);
 
-        //prepare message to send to Watson
-        message.input.text = req.body.Body
+        getWatson(req.bag.state)
+         .then(function(response){
+           req.bag.state.watsonResponse = response.watsonResponse
+           console.log("watson responds")
+           console.log({watson: req.bag.state.watsonResponse})
 
-        if ( ! message.workspace_id || message.workspace_id === 'workspace-id' ) {
-          console.log("workspace id error")
-        };
+           // load response array
 
-        // Send the input to the Watson conversation service
-        conversation.message( message, function(err, data) {
-            if ( err )  return err;
-        //prepare to save watson message to mongodb collection
-            const newwatsonResponse = new watsonResponse(data);
-            req.session.context = newwatsonResponse.context;
-            console.log({watson: JSON.stringify(newwatsonResponse)})
+           //   place holder for pulsing other bots etc
+
+           let testarray = [{text: 'one entry'}]
+           let n = 0;
+
+           for (var i = 0; i < testarray.length; i++) {
+             console.log(testarray[i]);
+             if (n<5){
+               n++
+               testarray.push({text: 'this is object number ' + n})
+             }
+           }
+
+           next()
         })
+
+
+
 /*
         updateDBText({From: From, created_at: created_at},
                    {$set: {action: null}},

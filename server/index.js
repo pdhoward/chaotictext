@@ -138,11 +138,16 @@ require('./routes/response_route')(responseRouter);
 app.use(function(req, res, next) {
 
   let transact_at = Date.now();
+
+  // define these variables and their purpose
   req.bag = {};
   req.bag.transact_at = transact_at;
   req.bag.state = {};
+  req.bag.state.count = 0;
+  req.bag.state.watsonResponse = {};  // see action/watson
+  req.bag.state.watsonResponse.context = {};  // see action/watson
 
-  console.log("---------INCOMING DEBUG AND TRACE ----------")
+  console.log("---------INCOMING TRACE ----------")
   console.log({requrl: req.url})
   console.log({reqmethod: req.method})
   console.log({reqbody: req.body.Body})

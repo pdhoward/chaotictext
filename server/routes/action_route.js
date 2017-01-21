@@ -63,7 +63,7 @@ module.exports = function(router) {
         console.log({platform: workFlowObject.platform})
 
         ////////////////////////////////////
-
+        var k = 0;
         for (var i = 0; i < workflow.length; i++) {
 
           let apiType = workflow[i].platform;
@@ -74,47 +74,66 @@ module.exports = function(router) {
             getWatson(req.bag.state)
               .then(function(response){
                req.bag.state.watsonResponse = response.watsonResponse
-               console.log("watson responds")
+               console.log(g('watson responds'));
                console.log({watson: req.bag.state.watsonResponse})
+
 
                // update workflow array if needed
                // load response array
 
+               if (k<5) {
+                 k++;
+                 let n = getRandomInt(0, 4);   //grab random intent
+                 let y = getRandomInt(0, 2);    // grab random agent
+                 workFlowObject = Object.assign({}, configureAgents[n].agent[y]);
+                 workflow.push(workFlowObject);
 
+                 // need response array loaded
+                 console.log(b('referral triggered'));
+                 console.log({newagent: JSON.stringify(workFlowObject)})
+
+               }
+
+               return
               })
               break;
 
             case "wit":
-                console.log("wit responds")
+                console.log(g('wit responds'));
                 // load response array
                 break;
 
             case "api":
-                console.log("api responds")
+                console.log(g('api responds'));
 
                 break;
 
             case "google":
-                console.log("google responds")
+                console.log(g('google responds'));
 
                 break;
 
             case "microsoft":
-                console.log("microsoft responds")
+                console.log(g('microsoft responds'));
 
                 break;
 
             case "slack":
-                console.log("slack responds")
+                console.log(g('slack responds'));
 
                 break;
 
         default:
-            console.log("AGENT PLATFORM UNKNOWN")
+            console.log(r('AGENT PLATFORM UNKNOWN'))
             break;
         }
-
-        next()
+        console.log("ITERATING ARRAY")
+        console.log({i: i})
+        console.log({length: workflow.length})
     };
+
+    console.log("SEEM TO BE EXITING")
+
+    next()
   })
 }

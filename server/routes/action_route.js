@@ -14,7 +14,9 @@ const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
 
 
-var chaotic = [];
+var chaotic = {};
+var workflow = [];
+var responses = [];
 
 
 function getRandomInt(min, max) {
@@ -43,52 +45,76 @@ module.exports = function(router) {
         };
 
         // retrieve agent configuration based on intent
-
         chaotic =  configureAgents.filter(function (obj){
           return obj.intent == intent;
         })
 
+        // test data - grab a random bot from array of bots associated with intent
+        let x = getRandomInt(0, 2);
+
+        let workFlowObject = {};
+        workFlowObject = Object.assign({}, chaotic[0].agent[x]);
+        workflow.push(workFlowObject)
+
         console.log(g('TEST COMPLETED - Agent Contacted'));
         console.log({intent: intent});
-        console.log({chaotic: JSON.stringify(chaotic)});
+        console.log({x: x});
+        console.log({chaoticagent: JSON.stringify(workFlowObject)});
+        console.log({platform: workFlowObject.platform})
 
-        let x = getRandomInt(1, 3);
+        ////////////////////////////////////
 
-        getWatson(req.bag.state)
-         .then(function(response){
-           req.bag.state.watsonResponse = response.watsonResponse
-           console.log("watson responds")
-           console.log({watson: req.bag.state.watsonResponse})
+        for (var i = 0; i < workflow.length; i++) {
 
-           // load response array
+          let apiType = workflow[i].platform;
 
-           //   place holder for pulsing other bots etc
+          switch (apiType) {
+            case "watson":
 
-           let testarray = [{text: 'one entry'}]
-           let n = 0;
+            getWatson(req.bag.state)
+              .then(function(response){
+               req.bag.state.watsonResponse = response.watsonResponse
+               console.log("watson responds")
+               console.log({watson: req.bag.state.watsonResponse})
 
-           for (var i = 0; i < testarray.length; i++) {
-             console.log(testarray[i]);
-             if (n<5){
-               n++
-               testarray.push({text: 'this is object number ' + n})
-             }
-           }
-
-           next()
-        })
+               // update workflow array if needed
+               // load response array
 
 
+              })
+              break;
 
-/*
-        updateDBText({From: From, created_at: created_at},
-                   {$set: {action: null}},
-                   {new: true})
-              .then(function(result){
-                  // do something
-            })
-*/
-        next();
-    });
+            case "wit":
+                console.log("wit responds")
+                // load response array
+                break;
 
+            case "api":
+                console.log("api responds")
+
+                break;
+
+            case "google":
+                console.log("google responds")
+
+                break;
+
+            case "microsoft":
+                console.log("microsoft responds")
+
+                break;
+
+            case "slack":
+                console.log("slack responds")
+
+                break;
+
+        default:
+            console.log("AGENT PLATFORM UNKNOWN")
+            break;
+        }
+
+        next()
+    };
+  })
 }

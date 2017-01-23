@@ -13,6 +13,7 @@
     "start": "nodemon ./server.js"
   },
   "keywords": [
+    "chaoticbots",
     "react",
     "reactjs",
     "webpack",
@@ -27,6 +28,7 @@
   "license": "MIT",
   "homepage": "http://www.xio.com",
   "dependencies": {
+    "async": "2.1.4",
     "axios": "^0.11.1",
     "badwords": "^1.0.0",
     "bluebird": "^3.4.3",
@@ -52,6 +54,7 @@
     "natural": "^0.4.0",
     "node-uuid": "1.4.7",
     "nodemailer": "^2.6.0",
+    "openwhisk": "3.2.1",
     "passport": "^0.3.2",
     "passport-facebook": "^2.0.0",
     "passport-local": "^1.0.0",

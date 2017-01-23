@@ -1,8 +1,10 @@
 'use strict';
 
+import whilst                from 'async/whilst';
 import Promise               from 'bluebird';
 import bodyParser            from 'body-parser'
 import natural			         from 'natural';
+import openwhisk             from 'openwhisk';
 import dbText                from '../api/dbText';
 import classify              from '../api/classify';
 import watson                from '../api/watson';
@@ -12,6 +14,12 @@ import { g, b, gr, r, y }    from '../color/chalk';
 
 const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
+
+// openwhick configurators
+var options = {apihost: 'openwhisk.ng.bluemix.net',
+               api: 'https://openwhisk.ng.bluemix.net/api/v1/',
+               api_key: '2fcf92aa-bc9a-4765-a9c8-361fdfd8c914:VZUUzt3Eyt12OOtb5idbFaqmCTdhYM9fJBLgGn2PR3OwEy96B4j9OJ7xfiOMS2ax'};
+var ow = openwhisk(options);
 
 
 var chaotic = {};
@@ -63,6 +71,36 @@ module.exports = function(router) {
         console.log({platform: workFlowObject.platform})
 
         ////////////////////////////////////
+        //////////////TEST OPENWHISK////////
+        ////////////////////////////////////
+
+        ow.actions.invoke({actionName: 'shipaddress'})
+          .then(function(result){
+          console.log("OPENWHISK")
+          console.log({result: result})
+        })
+
+
+        ////////////////////////////////////
+
+        var count = 0;
+          whilst(
+            function() { return count < 5; },
+            function(callback) {
+              count++;
+              setTimeout(function() {
+                callback(null, count);
+              }, 1000);
+            },
+            function (err, n) {
+
+              console.log("WHILST FUNCTION EXECUTED")
+              console.log({n:n})
+        // 5 seconds have passed, n = 5
+        }
+      );
+
+
         var k = 0;
         for (var i = 0; i < workflow.length; i++) {
 

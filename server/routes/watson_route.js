@@ -71,7 +71,7 @@ module.exports = function(router) {
 
     var io = req.app.get('socketio');
     let textMessage = new ChatMessage(req.body);
-    textMessage.created_at = req.bag.transact_at;
+    textMessage.created_at = req.bag.state.transact_at;
 
    // If session context exists, need to use it for next iteration
    // It means we've already launched a discussion

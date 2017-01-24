@@ -19,9 +19,10 @@ module.exports = function(router) {
 
         console.log(g('Score API Route'));
 
-        let created_at =      req.bag.transact_at;
-        let From =            req.body.From;
+        let created_at =      req.bag.state.transact_at;
+        let From =            req.bag.state.body.From;
         console.log(g('TEST COMPLETED - Message Scored'));
+        console.log("STILL NEEDS REFACTORING - SET INTENT - currently spoofed in classify");
 /*
         updateDBText({From: From, created_at: created_at},
                    {$set: {score: null}},

@@ -37,7 +37,7 @@ module.exports = {
   get: function(obj, cb) {
 
     //prepare message to send to Watson
-    message.input.text = obj.body;
+    message.input.text = obj.text;
     message.context = obj.watsonResponse.context;
 
     // watson interaction

@@ -110,7 +110,7 @@ process.on('uncaughtException', function (er) {
 //////////////////////////////////////////////////////////////////////////
 //////////////////// Register and Config Routes /////////////////////////
 ////////////////////////////////////////////////////////////////////////
-
+const stateRouter =       express.Router();
 const messageRouter =     express.Router();
 const wordRouter =        express.Router();
 const alchemyRouter =     express.Router();
@@ -121,6 +121,7 @@ const actionRouter =      express.Router();
 const analyticRouter =    express.Router();
 const responseRouter =    express.Router();
 
+require('./routes/state_route')(stateRouter);
 require('./routes/message_route')(messageRouter);
 require('./routes/word_route')(wordRouter);
 require('./routes/alchemy_route')(alchemyRouter);
@@ -136,25 +137,14 @@ require('./routes/response_route')(responseRouter);
 ////////////////////////////////////////////////////////////////////////
 
 app.use(function(req, res, next) {
-
-  let transact_at = Date.now();
-
-  // define these variables and their purpose
-  req.bag = {};
-  req.bag.transact_at = transact_at;
-  req.bag.state = {};
-  req.bag.state.count = 0;
-  req.bag.state.watsonResponse = {};  // see action/watson
-  req.bag.state.watsonResponse.context = {};  // see action/watson
-
-  console.log("---------INCOMING TRACE ----------")
+  console.log("---------INCOMING----------")
   console.log({requrl: req.url})
-  console.log({reqmethod: req.method})
   console.log({reqbody: req.body.Body})
   next()
 })
 
 ///////////////////////////////////////////////////////////////////
+app.use('/api', stateRouter);
 app.use('/api', messageRouter);
 app.use('/api', wordRouter)
 app.use('/api', alchemyRouter)

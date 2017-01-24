@@ -36,15 +36,14 @@ module.exports = function(router) {
         }
 
       let wordsDisallowed = {};
-      let created_at =      req.bag.transact_at;
-      let From =            req.body.From;
-      wordsDisallowed = Array.from(wordArray);
+      let created_at =      req.bag.state.transact_at;
+      let From =            req.bag.state.body.From;
+      wordsDisallowed =     Array.from(wordArray);
 
       updateDBText({From: From, created_at: created_at},
                    {$set: {wordsDisallowed: wordsDisallowed}},
                    {new: true})
       .then(function(result){
-
         next();
     });
   })

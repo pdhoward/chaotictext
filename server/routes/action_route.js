@@ -8,23 +8,19 @@ import openwhisk             from 'openwhisk';
 import dbText                from '../api/dbText';
 import classify              from '../api/classify';
 import watson                from '../api/watson';
-import configureAgents       from '../config/chaotic'
+import agents                from '../api/agents';
 import { g, b, gr, r, y }    from '../color/chalk';
 
-
+const getAgents =       Promise.promisify(agents.get.bind(agents));
 const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
 
-// openwhick configurators
+// openwhisk configurators
 var options = {apihost: 'openwhisk.ng.bluemix.net',
                api: 'https://openwhisk.ng.bluemix.net/api/v1/',
                api_key: '2fcf92aa-bc9a-4765-a9c8-361fdfd8c914:VZUUzt3Eyt12OOtb5idbFaqmCTdhYM9fJBLgGn2PR3OwEy96B4j9OJ7xfiOMS2ax'};
 var ow = openwhisk(options);
 
-
-var chaotic = {};
-var workflow = [];
-var responses = [];
 
 
 function getRandomInt(min, max) {
@@ -40,31 +36,39 @@ module.exports = function(router) {
       //evaluate a new message
       router.post('/message', function(req, res, next) {
 
-        console.log(g('Agent API Route'));
+        console.log(g('Action API Route'));
 
-        let created_at =      req.bag.transact_at;
-        let From =            req.body.From;
-        let intent =          req.bag.state.intent;
-        req.bag.state.body =  req.body.Body
+        let created_at =      req.bag.state.transact_at;
+        let From =            req.bag.state.body.From;
 
-        // session status
-        if (req.bag.state.watsonResponse.context) {
-          req.bag.state.count++;
-        };
+        // note: this api will be refactored to retrieve intents and agents based on client id
+        // client id would be passed as part of state object
+        // clone array returned by git
+        let configureAgents = [];
+        configureAgents = req.bag.state.configureAgents.slice()
+
+        let intent = req.bag.state.intent
+
+        let workFlowObject = {};
+        var chaotic = {};
+        var workflow = [];
+        var responses = [];
+
+        // test data - grab a random bot from array of bots associated with intent
+        // ultimately will be filtered based on priority code
+        let x = getRandomInt(0, 2);
+
 
         // retrieve agent configuration based on intent
         chaotic =  configureAgents.filter(function (obj){
-          return obj.intent == intent;
-        })
+            return obj.intent == intent;
+          })
 
-        // test data - grab a random bot from array of bots associated with intent
-        let x = getRandomInt(0, 2);
-
-        let workFlowObject = {};
         workFlowObject = Object.assign({}, chaotic[0].agent[x]);
         workflow.push(workFlowObject)
 
-        console.log(g('TEST COMPLETED - Agent Contacted'));
+
+        console.log(g('Agent Identified and Configured based on Intent'));
         console.log({intent: intent});
         console.log({x: x});
         console.log({chaoticagent: JSON.stringify(workFlowObject)});
@@ -83,95 +87,91 @@ module.exports = function(router) {
 
         ////////////////////////////////////
 
+        // count is equal to the number of interactions with agents
+        // which is dynamic since an agent may engage another to complete a
+        // dialogue
+
         var count = 0;
           whilst(
-            function() { return count < 5; },
+            function() { return count < workflow.length; },
+
             function(callback) {
+
+              let apiType = workflow[count].platform;
               count++;
-              setTimeout(function() {
-                callback(null, count);
-              }, 1000);
+
+              switch (apiType) {
+
+                case "watson":
+                  getWatson(req.bag.state)
+                    .then(function(response){
+                      req.bag.state.watsonResponse = response.watsonResponse
+                      console.log(g('watson responds'));
+                      console.log({watson: req.bag.state.watsonResponse})
+
+                      // spoof - load a referral agent
+                      let n = getRandomInt(0, 4);   //grab random intent
+                      let y = getRandomInt(0, 2);   //grab random agent
+
+                      if (count < 5) {
+                      workFlowObject = Object.assign({}, configureAgents[n].agent[y]);
+                      workflow.push(workFlowObject);
+                      }
+
+                      // still need response array loaded
+                      console.log(b('referral triggered'));
+                      console.log({newagent: JSON.stringify(workFlowObject)})
+                      console.log({count: count})
+                      console.log({size: workflow.length})
+
+                      callback(null, workFlowObject)
+                    })
+
+                  break;
+
+                case "wit":
+                    console.log(g('wit responds'));
+                    callback(null, workFlowObject)
+                    // load response array
+                    break;
+
+                case "api":
+                    console.log(g('api responds'));
+                    callback(null, workFlowObject)
+
+                    break;
+
+                case "google":
+                    console.log(g('google responds'));
+                    callback(null, workFlowObject)
+
+                    break;
+
+                case "microsoft":
+                    console.log(g('microsoft responds'));
+                    callback(null, workFlowObject)
+
+                    break;
+
+                case "slack":
+                    console.log(g('slack responds'));
+                    callback(null, workFlowObject)
+
+                    break;
+
+                default:
+                    console.log(r('AGENT PLATFORM UNKNOWN'))
+                    callback(null, workFlowObject)
+                    break;
+                }
+  //            callback(null, workFlowObject)
+
             },
             function (err, n) {
-
               console.log("WHILST FUNCTION EXECUTED")
-              console.log({n:n})
-        // 5 seconds have passed, n = 5
-        }
-      );
-
-
-        var k = 0;
-        for (var i = 0; i < workflow.length; i++) {
-
-          let apiType = workflow[i].platform;
-
-          switch (apiType) {
-            case "watson":
-
-            getWatson(req.bag.state)
-              .then(function(response){
-               req.bag.state.watsonResponse = response.watsonResponse
-               console.log(g('watson responds'));
-               console.log({watson: req.bag.state.watsonResponse})
-
-
-               // update workflow array if needed
-               // load response array
-
-               if (k<5) {
-                 k++;
-                 let n = getRandomInt(0, 4);   //grab random intent
-                 let y = getRandomInt(0, 2);    // grab random agent
-                 workFlowObject = Object.assign({}, configureAgents[n].agent[y]);
-                 workflow.push(workFlowObject);
-
-                 // need response array loaded
-                 console.log(b('referral triggered'));
-                 console.log({newagent: JSON.stringify(workFlowObject)})
-
-               }
-
-               return
-              })
-              break;
-
-            case "wit":
-                console.log(g('wit responds'));
-                // load response array
-                break;
-
-            case "api":
-                console.log(g('api responds'));
-
-                break;
-
-            case "google":
-                console.log(g('google responds'));
-
-                break;
-
-            case "microsoft":
-                console.log(g('microsoft responds'));
-
-                break;
-
-            case "slack":
-                console.log(g('slack responds'));
-
-                break;
-
-        default:
-            console.log(r('AGENT PLATFORM UNKNOWN'))
-            break;
-        }
-        console.log("ITERATING ARRAY")
-        console.log({i: i})
-        console.log({length: workflow.length})
-    };
-
-    console.log("SEEM TO BE EXITING")
-
-    next()
-  })
-}
+              console.log({n: JSON.stringify(n)})
+              next()
+            }
+          )
+        })
+      }

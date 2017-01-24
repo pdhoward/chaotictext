@@ -100,82 +100,43 @@ module.exports = function(router) {
                     .then(function(response){
                       req.bag.state.watsonResponse = response.watsonResponse
                       console.log(g('watson responds'));
-                      console.log({watson: req.bag.state.watsonResponse})
+                      console.log({watson: JSON.stringify(req.bag.state.watsonResponse)})
 
-                      // spoof - load a referral agent
-                      let n = getRandomInt(0, 4);   //grab random intent
-                      let y = getRandomInt(0, 2);   //grab random agent
+                      // inspect watsonResponse
+                      // if bot referral then grab bot config from config array
+                      // workFlowObject = Object.assign({}, chaotic[0].agent[x])
+                      // workflow.push(workFlowObject);
 
-                      if (count < 5) {
-                      workFlowObject = Object.assign({}, {
-		                                                      name: 'COOL DEVELOPER',
-		                                                      id: '${Date.now()}${uuid.v4()}',
-		                                                      avatar: 'https://www.gravatar.com/avatar/',
-		                                                      greeting: 'Hello. My Name is Dev? How are you?',
-		                                                      priority: '1',
-		                                                      platform: 'open',
-		                                                      username: process.env.CONVERSATION_USERNAME || '<username>',
-		                                                      password: process.env.CONVERSATION_PASSWORD || '<password>',
-		                                                      url: 'https://gateway.watsonplatform.net/conversation/api',
-		                                                      version_date: '2016-07-11',
-		                                                      version: 'v1'});
-                      workflow.push(workFlowObject);
-                      }
+                      // spoof
+                    //  req.bag.state.response = result.watsonResponse.
 
-                      // still need response array loaded
-                      console.log(b('referral triggered'));
-                      console.log({newagent: JSON.stringify(workFlowObject)})
-                      console.log({count: count})
-                      console.log({size: workflow.length})
-
-                      callback(null, workFlowObject)
+                      callback(null, 'watson')
                     })
 
                   break;
 
                 case "wit":
                     console.log(g('wit responds'));
-                    callback(null, workFlowObject)
+                    callback(null, 'wit')
                     // load response array
                     break;
 
                 case "api":
                     console.log(g('api responds'));
-                    callback(null, workFlowObject)
+                    callback(null, 'api')
 
                     break;
 
                 case "google":
                     console.log(g('google responds'));
 
-                    if (count < 5) {
-                    workFlowObject = Object.assign({}, {
-                                                        name: 'GREAT AGENT ',
-                                                        id: '${Date.now()}${uuid.v4()}',
-                                                        avatar: 'https://www.gravatar.com/avatar/',
-                                                        greeting: 'Hello. My Name is GREAT? How are you?',
-                                                        priority: '1',
-                                                        platform: 'slack',
-                                                        username: process.env.CONVERSATION_USERNAME || '<username>',
-                                                        password: process.env.CONVERSATION_PASSWORD || '<password>',
-                                                        url: 'https://gateway.watsonplatform.net/conversation/api',
-                                                        version_date: '2016-07-11',
-                                                        version: 'v1'});
-                    workflow.push(workFlowObject);
-                    }
-
-                    // still need response array loaded
-                    console.log(b('referral triggered'));
-                    console.log({newagent: JSON.stringify(workFlowObject.name)})
-
-
-                    callback(null, workFlowObject)
+                    callback(null, 'google')
 
                     break;
 
                 case "microsoft":
                     console.log(g('microsoft responds'));
-                    callback(null, workFlowObject)
+                    callback(null, 'microsoft')
 
                     break;
 
@@ -187,28 +148,7 @@ module.exports = function(router) {
                       // spoof
                       req.bag.state.response = result.response.result.payload
 
-
-                      if (count < 5) {
-                      workFlowObject = Object.assign({}, {
-		                                                      name: 'WHO AM I',
-		                                                      id: '${Date.now()}${uuid.v4()}',
-		                                                      avatar: 'https://www.gravatar.com/avatar/',
-		                                                      greeting: 'Hello. My Name is GREAT? How are you?',
-		                                                      priority: '1',
-		                                                      platform: 'google',
-		                                                      username: process.env.CONVERSATION_USERNAME || '<username>',
-		                                                      password: process.env.CONVERSATION_PASSWORD || '<password>',
-		                                                      url: 'https://gateway.watsonplatform.net/conversation/api',
-		                                                      version_date: '2016-07-11',
-		                                                      version: 'v1'});
-                      workflow.push(workFlowObject);
-                      }
-
-                      // still need response array loaded
-                      console.log(b('referral triggered'));
-                      console.log({newagent: JSON.stringify(workFlowObject.name)})
-
-                      callback(null, result)
+                      callback(null, 'open')
                     })
 
                     break;
@@ -216,27 +156,7 @@ module.exports = function(router) {
                 case "slack":
                     console.log(g('slack responds'));
 
-                    if (count < 5) {
-                    workFlowObject = Object.assign({}, {
-                                                        name: 'NOW WHO AM I ',
-                                                        id: '${Date.now()}${uuid.v4()}',
-                                                        avatar: 'https://www.gravatar.com/avatar/',
-                                                        greeting: 'Hello. My Name is GREAT? How are you?',
-                                                        priority: '1',
-                                                        platform: 'human',
-                                                        username: process.env.CONVERSATION_USERNAME || '<username>',
-                                                        password: process.env.CONVERSATION_PASSWORD || '<password>',
-                                                        url: 'https://gateway.watsonplatform.net/conversation/api',
-                                                        version_date: '2016-07-11',
-                                                        version: 'v1'});
-                    workflow.push(workFlowObject);
-                    }
-
-                    // still need response array loaded
-                    console.log(b('referral triggered'));
-                    console.log({newagent: JSON.stringify(workFlowObject.name)})
-
-                    callback(null, workFlowObject)
+                    callback(null, 'slack')
 
                     break;
 

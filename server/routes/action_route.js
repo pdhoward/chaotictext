@@ -108,9 +108,9 @@ module.exports = function(router) {
                       // workflow.push(workFlowObject);
 
                       // spoof
-                    //  req.bag.state.response = result.watsonResponse.
+                    req.bag.state.response = response.watsonResponse.output.text[0];
 
-                      callback(null, 'watson')
+                    callback(null, 'watson')
                     })
 
                   break;

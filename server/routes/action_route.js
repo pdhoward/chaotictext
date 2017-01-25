@@ -12,6 +12,7 @@ import agents                from '../api/agents';
 import { g, b, gr, r, y }    from '../color/chalk';
 
 const getAgents =       Promise.promisify(agents.get.bind(agents));
+const extractAgents =   Promise.promisify(agents.extract.bind(agents));
 const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
 
@@ -72,11 +73,7 @@ module.exports = function(router) {
 
         console.log(g('Agent Identified and Configured based on Intent'));
         console.log({intent: intent});
-        console.log({x: x});
         console.log({chaoticagent: JSON.stringify(workFlowObject)});
-        console.log({platform: workFlowObject.platform})
-
-
 
         ////////////////////////////////////
 
@@ -99,6 +96,9 @@ module.exports = function(router) {
                   getWatson(req.bag.state)
                     .then(function(response){
                       req.bag.state.watsonResponse = response.watsonResponse
+
+                      // future fix -- need to iterate over output array
+                      req.bag.state.response = response.watsonResponse.output.text[0];   // all CUI responses stored here. Need to
                       console.log(g('watson responds'));
                       console.log({watson: JSON.stringify(req.bag.state.watsonResponse)})
 
@@ -107,10 +107,13 @@ module.exports = function(router) {
                       // workFlowObject = Object.assign({}, chaotic[0].agent[x])
                       // workflow.push(workFlowObject);
 
-                      // spoof
-                    req.bag.state.response = response.watsonResponse.output.text[0];
+                      extractAgents(req.bag.state)
+                        .then(function(response){
 
-                    callback(null, 'watson')
+                          // temp
+                          console.log(g("Made it through Extract Agent"))
+                          callback(null, 'watson')
+                        })
                     })
 
                   break;

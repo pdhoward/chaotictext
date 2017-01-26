@@ -42,7 +42,7 @@ module.exports = function(router) {
         console.log(g('Action API Route'));
 
         let created_at =      req.bag.state.transact_at;
-        let From =            req.bag.state.body.From;
+        let From =            req.bag.state.from_client;
 
         // note: this api will be refactored to retrieve intents and agents based on client id
         // client id would be passed as part of state object
@@ -50,7 +50,9 @@ module.exports = function(router) {
         let configureAgents = [];
         configureAgents = req.bag.state.configureAgents.slice()
 
-        let intent = req.bag.state.intent
+        // currently spoofed and set by classify
+        let turns = req.bag.state.count;
+        let intent = req.bag.state.input_intent[turns].intent;
 
         let workFlowObject = {};
         var chaotic = {};
@@ -59,6 +61,7 @@ module.exports = function(router) {
 
         // test data - grab a random bot from array of bots associated with intent
         // ultimately will be filtered based on priority code
+        // note 4th bot in the array is from openwhisk -- used for testing
         let x = getRandomInt(0, 2);
 
 

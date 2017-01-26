@@ -32,9 +32,17 @@ module.exports = function(router) {
         const classifyMatches = classifier.getClassifications(textMessage)
         console.log({topic: classifyMessage})
         console.log({matches: JSON.stringify(classifyMatches)})
-        // SPOOF - update state
-        req.bag.state.intent = classifyMatches[0].label;
-        req.bag.state.score = classifyMatches[0].value
+
+        //////////// SPOOF - update state for intent and score
+        let intent = classifyMatches[0].label;
+        let score = classifyMatches[0].value
+        let sourceObject = {
+          intent: intent,
+          score: score
+        }
+        let inputObject = Object.assign({}, sourceObject)
+        req.bag.state.input_intent.push(inputObject)             // capture spoof for intent and score
+        ///////////////////////////
 
         next()
      })

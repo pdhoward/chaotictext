@@ -37,7 +37,7 @@ module.exports = function(router) {
 
       let wordsDisallowed = {};
       let created_at =      req.bag.state.transact_at;
-      let From =            req.bag.state.body.From;
+      let From =            req.bag.state.from_client
       wordsDisallowed =     Array.from(wordArray);
 
       updateDBText({From: From, created_at: created_at},

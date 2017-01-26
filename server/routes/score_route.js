@@ -20,7 +20,7 @@ module.exports = function(router) {
         console.log(g('Score API Route'));
 
         let created_at =      req.bag.state.transact_at;
-        let From =            req.bag.state.body.From;
+        let From =            req.bag.state.from_client;
         console.log(g('TEST COMPLETED - Message Scored'));
         console.log("STILL NEEDS REFACTORING - SET INTENT - currently spoofed in classify");
 /*

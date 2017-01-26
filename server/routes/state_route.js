@@ -25,6 +25,17 @@ module.exports = function(router) {
         // note that state object is also updated by routes which analyze the text
         // this is for the Twilio UI -- see schemas message.js
         req.bag =                               {};
+
+        // load config information -- used in action routes
+
+        getAgents({})
+          .then(function(response){
+            req.bag.agents = [];
+            req.bag.agents = response.slice()    // copies array of objects
+          })
+
+        ////////////
+
         req.bag.state =                         {};
         req.bag.state.to_client =               req.body.To;   // message to
         req.bag.state.from_client =             req.body.From; // message from
@@ -59,21 +70,8 @@ module.exports = function(router) {
 
         req.bag.state.transact_at =             transact_at;
         req.bag.state.version =                 "v0.3.0";
-        req.bag.state.watsonResponse =          {};           // see action/watson
-        req.bag.state.watsonResponse.context =  {};           // see action/watson
 
-        // session status
-//        if (req.bag.state.watsonResponse.context) {
-//          req.bag.state.count++;
-//      };
+        next()
 
-        getAgents({})
-          .then(function(configureAgents){
-            // retrieve intent and agent configuration for the client
-            req.bag.state.configureAgents = [];
-            req.bag.state.configureAgents = configureAgents.slice()
-            next()
-
-          })
         })
       }

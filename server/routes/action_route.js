@@ -45,10 +45,12 @@ module.exports = function(router) {
         let From =            req.bag.state.from_client;
 
         // note: this api will be refactored to retrieve intents and agents based on client id
-        // client id would be passed as part of state object
-        // clone array returned by git
+        // client id would be passed as part of state object as well
+        // clone array returned via github potentially
+        // the agents are attached to the req.bag object in state.js  --- we need to load this up on initialization
         let configureAgents = [];
-        configureAgents = req.bag.state.configureAgents.slice()
+        configureAgents = req.bag.agents.slice()
+
 
         // currently spoofed and set by classify
         let turns = req.bag.state.count;
@@ -67,6 +69,8 @@ module.exports = function(router) {
 
         // retrieve agent configuration based on intent
         chaotic =  configureAgents.filter(function (obj){
+            console.log("DEBUG")
+            console.log(JSON.stringify(obj))
             return obj.intent == intent;
           })
 
@@ -98,12 +102,17 @@ module.exports = function(router) {
                 case "watson":
                   getWatson(req.bag.state)
                     .then(function(response){
-                      req.bag.state.watsonResponse = response.watsonResponse
+
+                      let sourceObject = {
+                        platform: 'watson'
+                      }
+                      let inputObject = Object.assign(sourceObject, response.watsonResponse)
+                      req.bag.state.output_dialogue_objects.push(inputObject)  // capture response object in state
 
                       // future fix -- need to iterate over output array
                       req.bag.state.response = response.watsonResponse.output.text[0];   // all CUI responses stored here. Need to
                       console.log(g('watson responds'));
-                      console.log({watson: JSON.stringify(req.bag.state.watsonResponse)})
+                      console.log({watson: JSON.stringify(inputObject)})
 
                       // inspect watsonResponse
                       // if bot referral then grab bot config from config array
@@ -113,8 +122,22 @@ module.exports = function(router) {
                       extractAgents(req.bag.state)
                         .then(function(response){
 
-                          // temp
-                          console.log(g("Made it through Extract Agent"))
+                          // retrieve agent configuration based on platform and agent name
+                          // needs to be updated to handle no agent being returned and for configuring workflow
+                          // extractAgents needs to be fixed to laod and return an array of objects
+                          console.log(g("Extracted Agent - BACK IN ACTIONS"))
+                          console.log(JSON.stringify(response))
+
+                          let newChaotic = {}
+                          newChaotic =  configureAgents.filter(function (obj){
+                              return obj.intent == response.platform;
+                            })
+
+                          workFlowObject = Object.assign({}, newChaotic);
+                          workflow.push(workFlowObject)
+
+                          console.log(b('Agent Configured based on Intent'));
+                          console.log({chaoticagent: JSON.stringify(workFlowObject)});
                           callback(null, 'watson')
                         })
                     })
@@ -153,7 +176,6 @@ module.exports = function(router) {
                       console.log({result: JSON.stringify(result)})
                       // spoof
                       req.bag.state.response = result.response.result.payload
-
                       callback(null, 'open')
                     })
 

@@ -16,6 +16,12 @@ const conversation =    watson.conversation( {
   version: 'v1'
   } );
 
+
+          // session status -- needs to be updated to pulse the req.bag.ouput_dialogue_objects - pass back context if it exists
+  //        if (req.bag.state.watsonResponse.context) {
+  //          req.bag.state.count++;
+  //      };
+
 const message = {
     workspace_id: workspace,
     input: {

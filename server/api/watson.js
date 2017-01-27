@@ -6,56 +6,41 @@ require( 'dotenv' ).config( {silent: true} );
 import watson                      from 'watson-developer-cloud';
 import watsonResponse              from '../db/schemas/WatsonResponse';
 
-const workspace =       process.env.WORKSPACE_ID || 'workspace-id';
-
-const conversation =    watson.conversation( {
-  url: 'https://gateway.watsonplatform.net/conversation/api',
-  username: process.env.CONVERSATION_USERNAME || '<username>',
-  password: process.env.CONVERSATION_PASSWORD || '<password>',
-  version_date: '2016-07-11',
-  version: 'v1'
-  } );
-
-
-          // session status -- needs to be updated to pulse the req.bag.ouput_dialogue_objects - pass back context if it exists
-  //        if (req.bag.state.watsonResponse.context) {
-  //          req.bag.state.count++;
-  //      };
-
-const message = {
-    workspace_id: workspace,
-    input: {
-      text: ''
-    },
-    context: {},
-    alternate_intents: false,
-    entities: [],
-    intents: [],
-    output: {}
-  }
-
-  const watsonUserID = {
-    username: 'Watson',
-    socketID: '/#testid'
-  }
 
 module.exports = {
-  get: function(obj, cb) {
+  get: function(obj, config, cb) {    
 
-    // pull the last entry in the state's dialogue objects that matches watson, if any
+    // configure watson conversation for the agent that has been called
+    let watsonconfig = {};
+    watsonconfig.url =          config.url;
+    watsonconfig.username =     config.username;
+    watsonconfig.password =     config.password;
+    watsonconfig.version_date = config.version_date;
+    watsonconfig.version =      config.version;
+    let conversation =          watson.conversation( watsonconfig );
 
-    let indx = obj.map(x => x.platform).lastIndexOf('watson');
+    // Retrieve the context of a conversation with watson, if any
+    // If a context exists from a prior interaction, it is persisted via sessions
+    // This is found by searching for the last entry = watson on the dialogue array
 
+    let dialogue = JSON.parse(JSON.stringify(obj.output_dialogue_objects))
+
+    let indx = dialogue.map(x => x.platform).lastIndexOf('watson');
+    let context = {}
     if (indx = -1){
-      message.context = {}
-    } else {
-    console.log("DEBUG")
-    console.log(obj[indx])
-    }
+       console.log("WATSON API - NO CONTEXT FOUND")}
+     else {
+      console.log("WATSON API - CONTEXT FOUND BUT NOT USED")
+      console.log(dialogue[indx])
+     }
 
-    //prepare message to send to Watson
-    message.input.text = obj.text;
-    message.context = {};
+    // config the message object to pass to watson, which includes the context
+    let message = {}
+    message.input = {}
+    message.workspace_id =      config.workspace;
+    message.context =           context;          // may need an object assign
+    message.input.text =        obj.text;
+    message.alternate_intents = false;
 
     // watson interaction
     conversation.message( message, function(err, data) {

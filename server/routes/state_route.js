@@ -59,7 +59,7 @@ module.exports = function(router) {
         req.bag.state.input_dialogue_objects.push(inputObject)  // capture twilio input object in an array - current default - reset each turn
 
         ///// set of platform objects with responses
-        req.bag.state.output_dialogue_objects = [];           // platform objects related to current active text - reset on each turn
+        req.bag.state.output_dialogue_objects = [];          // platform objects related to current active text - reset on each turn
 
         // dialogue thread is kept for entire conversation until change in topic ! or time expires
         // message input loaded in messages.js

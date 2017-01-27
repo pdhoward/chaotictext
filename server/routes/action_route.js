@@ -17,22 +17,13 @@ const extractAgents =   Promise.promisify(agents.extract.bind(agents));
 const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
 
-// openwhisk configurators
-var options = {apihost: 'openwhisk.ng.bluemix.net',
-               api: 'https://openwhisk.ng.bluemix.net/api/v1/',
-               api_key: '2fcf92aa-bc9a-4765-a9c8-361fdfd8c914:VZUUzt3Eyt12OOtb5idbFaqmCTdhYM9fJBLgGn2PR3OwEy96B4j9OJ7xfiOMS2ax'
-              };
-
-var ow = openwhisk(options);
-
-
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
     ////////////////////////////////////////////////////////////
-    //////    Agent Router based on Identified Topic       ////
+    //////  Agent Router - Invoke Agent based intent       ////
     //////////////////////////////////////////////////////////
 
 module.exports = function(router) {
@@ -103,13 +94,14 @@ module.exports = function(router) {
 
             function(callback) {
 
+              // pull the agent object from the workflow queue
+              let config = workflow[count]
               let apiType = workflow[count].platform;
               count++;
 
               switch (apiType) {
-
                 case "watson":
-                  getWatson(req.bag.state.output_dialogue_objects)
+                  getWatson(req.bag.state, config)
                     .then(function(response){
 
                       let sourceObject = {
@@ -165,38 +157,6 @@ module.exports = function(router) {
 
                           console.log("DEBUG FROM CASE WATSON")
 
-/*
-                          // build agent object for insertion to workflow.
-                          // First, copy in directly the parms from the response object
-                          let nextAgentParms = {}
-                          nextAgentParms.greeting = nextAgentConfig.greeting;  // note permits user to insert new greeting via response
-                          nextAgentParms.platform = nextAgentConfig.platform;
-                          nextAgentParms.intent = nextAgentConfig.intent;
-
-                          // This step grabs data from config object related to agent platform
-                          nextAgentParms.url = nextAgentConfig.url;
-                          nextAgentParms.username = nextAgentConfig.username;
-                          nextAgentParms.password = nextAgentConfig.password;
-                          nextAgentParms.version_date = nextAgentConfig.version_date;
-                          nextAgentParms.version = nextAgentConfig.version;
-
-                          // This step grabs final config related to agent based on intent
-                          // First - filter config file based on intent stated for agent
-                          let nextAgentID = {}
-                          nextAgentID =  configureAgents.filter(function (obj){
-                              return obj.intent == nextAgentConfig.intent;
-                            })
-                          nextAgentParms.avatar = nextAgentID.avatar;
-                          nextAgentParms.priority = nextAgentID.priority;
-
-                          // time stamp the object
-                          nextAgentParms.id = uuid.v1({msecs: new Date()});
-
-                          // insert object into workflow
-
-                          workFlowObject = {};
-                          workFlowObject = Object.assign({}, nextAgentParms);
-            */
                           workflow.push(workFlowObject)
 
                           console.log(b('Agent Configured based on Intent'));
@@ -234,6 +194,18 @@ module.exports = function(router) {
                     break;
 
                 case "open":
+
+                    let api_key = config.username + ":" + config.password;
+                    // openwhisk configurators
+                    var options = {//apihost: 'openwhisk.ng.bluemix.net',
+                                    api: 'https://openwhisk.ng.bluemix.net/api/v1/',
+                                    api_key: api_key
+                                //    api_key: '2fcf92aa-bc9a-4765-a9c8-361fdfd8c914:VZUUzt3Eyt12OOtb5idbFaqmCTdhYM9fJBLgGn2PR3OwEy96B4j9OJ7xfiOMS2ax'
+                                  };
+
+                      var ow = openwhisk(options);
+
+
                     ow.actions.invoke({actionName: 'shipaddress', blocking: true, params: {}})
                       .then(function(result){
                       console.log(g('open responds'));

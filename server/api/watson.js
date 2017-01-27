@@ -42,9 +42,20 @@ const message = {
 module.exports = {
   get: function(obj, cb) {
 
+    // pull the last entry in the state's dialogue objects that matches watson, if any
+
+    let indx = obj.map(x => x.platform).lastIndexOf('watson');
+
+    if (indx = -1){
+      message.context = {}
+    } else {
+    console.log("DEBUG")
+    console.log(obj[indx])
+    }
+
     //prepare message to send to Watson
     message.input.text = obj.text;
-    message.context = obj.watsonResponse.context;
+    message.context = {};
 
     // watson interaction
     conversation.message( message, function(err, data) {

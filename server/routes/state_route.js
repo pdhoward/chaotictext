@@ -31,7 +31,7 @@ module.exports = function(router) {
         getAgents({})
           .then(function(response){
             req.bag.agents = [];
-            req.bag.agents = response.slice()    // copies array of objects
+            req.bag.agents = response.slice()    // copies array of agent configuration objects
           })
 
         ////////////

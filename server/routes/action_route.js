@@ -10,18 +10,20 @@ import dbText                from '../api/dbText';
 import classify              from '../api/classify';
 import watson                from '../api/watson';
 import agents                from '../api/agents';
+import workflow              from '../api/workflow';
 import { g, b, gr, r, y }    from '../color/chalk';
 
 const getAgents =       Promise.promisify(agents.get.bind(agents));
 const extractAgents =   Promise.promisify(agents.extract.bind(agents));
+const setWorkflow =     Promise.promisify(workflow.set.bind(workflow));
 const getWatson =       Promise.promisify(watson.get.bind(watson));
 const updateDBText =    Promise.promisify(dbText.update.bind(dbText));
 
+let configureAgents = [];
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
     ////////////////////////////////////////////////////////////
     //////  Agent Router - Invoke Agent based intent       ////
     //////////////////////////////////////////////////////////
@@ -37,50 +39,21 @@ module.exports = function(router) {
         let From =            req.bag.state.from_client;
 
         /////////////////////////////////////////////////////////////////////////////////////
-        ////////////            SECTION TO BE REFACTORED                         /////////////
+        ////////////                         Initialize                         /////////////
         /////////////////////////////////////////////////////////////////////////////////////
 
-        // note: this api will be refactored to retrieve intents and agents based on client id
-        // client id would be passed as part of state object as well
-        // clone array returned via github potentially
         // the agents are attached to the req.bag object in state.js  --- we need to load this up on initialization
-        let configureAgents = [];
+
         configureAgents = req.bag.agents.slice()
+        let turns =       req.bag.state.count;
+        let intent =      req.bag.state.input_intent[turns].intent;
 
-
-        // currently spoofed and set by classify
-        let turns = req.bag.state.count;
-        let intent = req.bag.state.input_intent[turns].intent;
-
-        // test data - grab a random bot from array of bots associated with intent
-        // ultimately will be filtered based on priority code
-        // note 4th bot in the array is from openwhisk -- used for testing
-        let x = getRandomInt(0, 2);
-
-        // retrieve agent ID based on the intent of the text deciphered by AI process
-        let workFlowObject = {};
         var workflow = [];
         var responses = [];
+        // note that in the first cycle of processing a message the
+        // intent is known but not yet matched to platform or agent
 
-        let chaotic = {};
-        chaotic =  configureAgents.filter(function (obj){
-            return obj.intent == intent;
-          })
-
-        // using the platform associated with the intent of the agent, retrieve config data
-        let nextAgentConfig = {}
-        nextAgentConfig =  configureAgents.filter(function (obj){
-              return obj.platform == chaotic[0].agent[x].platform;
-        })
-
-        workFlowObject = Object.assign({}, chaotic[0].agent[x], nextAgentConfig[0]);
-        workflow.push(workFlowObject)
-
-        console.log(g('Agent Identified and Configured based on Intent'));
-        console.log({intent: intent});
-        console.log({workflowobject: JSON.stringify(workFlowObject)});
-        console.log({chaotic: JSON.stringify(chaotic)});
-        console.log({agentconfig: JSON.stringify(nextAgentConfig)});
+        workflow.push({platform:'unknown', intent: intent})
 
         /////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +73,25 @@ module.exports = function(router) {
               count++;
 
               switch (apiType) {
+
+                case "unknown":
+
+                      console.log(g('ENTERED UNKNOWN'));
+
+                      let params = {};
+                      params.priority = 'new';
+                      params.response = {};
+                      params.response.intent = intent;
+
+                    setWorkflow(params)
+                      .then(function(response){
+                        console.log(g('INITIALIZATION ACTIONS'));
+                        console.log({response: JSON.stringify(response)});
+                        workflow.push(response)
+                        callback(null, 'unknown')
+                      })
+
+                    break;
                 case "watson":
                   getWatson(req.bag.state, config)
                     .then(function(response){
@@ -124,27 +116,30 @@ module.exports = function(router) {
                       extractAgents(req.bag.state)
                         .then(function(response){
 
-                          // retrieve agent configuration based on platform and agent name
+                          // retrieve agent configuration based on intent, agent name and platform
                           // needs to be updated to handle no agent being returned and for configuring workflow
                           // extractAgents needs to be fixed to laod and return an array of objects
                           console.log(g("Extracted Agent - BACK IN ACTION"))
                           console.log(JSON.stringify(response))
+/*
 
-                          // grab config and auth data for platform to be pulsed
-                          let configobj = {}
-                          configobj =  configureAgents.filter(function (obj){
-                              return obj.platform == response.platform;
-                            })
                           // grab intent objects for further filtering
+                          // note all priority properties in config = 1. Future enhancement to permit differentiated bots
+                          // based on customer segment
                           let intentobj = {}
                           intentobj =  configureAgents.filter(function (obj){
-                              return obj.platform == response.intent;
+                              return obj.intent == response.intent;
                             })
                          // from the filtered intent array, grab the agent that matches
                           let agentobj = {}
                           agentobj =  intentobj.filter(function (obj){
-                                return obj.platform == response.agent;
+                              return obj.name == response.agent;
                             })
+                        // grab config and auth data for platform to be pulsed
+                          let configobj = {}
+                          configobj =  configureAgents.filter(function (obj){
+                              return obj.platform == response.platform;
+                              })
 
                           // merge two objects to create new workflow entry
                           workFlowObject = {};
@@ -155,16 +150,24 @@ module.exports = function(router) {
                           workFlowObject.greeting = response.greeting;
                           workFlowObject.id = uuid.v1({msecs: new Date()});
 
-                          console.log("DEBUG FROM CASE WATSON")
+                          console.log("DEBUG FROM CASE WATSON")*/
+                      
+                          console.log(g('about to head to setworkflow'));
 
-                          workflow.push(workFlowObject)
+                          let params = {};
+                          params.priority = '1';
+                          params.response = response;
 
-                          console.log(b('Agent Configured based on Intent'));
-                          console.log({newagent: workFlowObject});
-                          console.log({array: workflow});
-                          callback(null, 'watson')
+                        setWorkflow(params)
+                          .then(function(response){
+                            console.log(g('WATSON WORKFLOW ACTIONS'));
+                            console.log({response: JSON.stringify(response)});
+                            workflow.push(response)
+                            console.log({array: workflow});
+                            callback(null, 'watson')
+                          })
                         })
-                    })
+                      })
 
                   break;
 
@@ -197,16 +200,12 @@ module.exports = function(router) {
 
                     let api_key = config.username + ":" + config.password;
                     // openwhisk configurators
-                    var options = {//apihost: 'openwhisk.ng.bluemix.net',
-                                    api: 'https://openwhisk.ng.bluemix.net/api/v1/',
-                                    api_key: api_key
-                                //    api_key: '2fcf92aa-bc9a-4765-a9c8-361fdfd8c914:VZUUzt3Eyt12OOtb5idbFaqmCTdhYM9fJBLgGn2PR3OwEy96B4j9OJ7xfiOMS2ax'
-                                  };
+                    var options = { api: config.url,
+                                    api_key: api_key };
 
-                      var ow = openwhisk(options);
+                    var ow = openwhisk(options);
 
-
-                    ow.actions.invoke({actionName: 'shipaddress', blocking: true, params: {}})
+                    ow.actions.invoke({actionName: config.name, blocking: true, params: {}})
                       .then(function(result){
                       console.log(g('open responds'));
                       console.log({result: JSON.stringify(result)})

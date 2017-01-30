@@ -58,6 +58,12 @@ module.exports = {
     var str = obj.response;
 
     extractTriggers(str, function(found){
+      // any triggers found?
+      if (found== null) {
+        console.log(r("CORRECTION TRIGGERS NOT FOUND"))
+        return cb(null, null)
+      }
+
       found.forEach(function(element) {
         convertJSON(element, function(strJson) {
           testJSON(strJson, function(err, o){

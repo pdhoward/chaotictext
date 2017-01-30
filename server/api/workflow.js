@@ -29,33 +29,53 @@ module.exports = {
         intentobj =  configureAgents.filter(function (obj){
           return obj.intent == response.intent;
           })
+        console.log(g("Step 1 -identify all agents deployed for this intent"))
+        console.log(JSON.stringify(intentobj))
 
         // with opening text only intent is know, not agent. This sets dafaults -- needs refactoring
-        if (priority = 'new') {
+        if (priority == 'new') {
           response.agent = intentobj[0].agent[0].name;
           response.platform = intentobj[0].agent[0].platform
+
+
+          console.log(g("NEW -select default agent - NEEDS REFACTORING"))
+          console.log(JSON.stringify({response: response}))
+          console.log(JSON.stringify({priority: priority}))
+          console.log(JSON.stringify({param: param}))
         }
 
         // from the filtered intent array, grab the agent that matches
+
+        if (intentobj.length > 1){
+          console.log(r("Error - duplicate intents in config file: " + response.intent ))
+        }
+
         let agentobj = {}
-        agentobj =  intentobj.filter(function (obj){
+        let searchobj = intentobj[0].agent.slice()
+        agentobj =  searchobj.filter(function (obj){
           return obj.name == response.agent;
           })
+
+        console.log(g("Step 2 -select agent based on name"))
+        console.log(JSON.stringify(agentobj))
 
         // grab config and auth data for platform to be pulsed
         let configobj = {}
         configobj =  configureAgents.filter(function (obj){
           return obj.platform == response.platform;
           })
+        console.log(g("Step 3 -fetch config data"))
+        console.log(JSON.stringify(configobj))
 
       // merge two objects to create new workflow entry
         let workFlowObject = {};
         workFlowObject = Object.assign(configobj[0], agentobj[0]);
 
       // final update specific properties
-        workFlowObject.name = response.agent;
-        workFlowObject.greeting = response.greeting;
+        workFlowObject.intent = response.intent;
         workFlowObject.id = uuid.v1({msecs: new Date()});
+        console.log(g("Step 4 -create workflow object"))
+        console.log(JSON.stringify(workFlowObject))
         return cb(null,workFlowObject);
 
   }

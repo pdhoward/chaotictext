@@ -72,6 +72,10 @@ module.exports = function(router) {
               let apiType = workflow[count].platform;
               count++;
 
+              console.log(r('TOP OF THE FUNCTION'));
+              console.log({count: count});
+              console.log({array: workflow});
+
               switch (apiType) {
 
                 case "unknown":
@@ -108,50 +112,17 @@ module.exports = function(router) {
                       // future fix -- need to iterate over output array
                       req.bag.state.response = response.watsonResponse.output.text[0];   // REFACTOR Need to iterate over output array
 
-                      // inspect watsonResponse
+                      // inspect watson Response
                       // if bot referral then grab bot config from config array
-                      // workFlowObject = Object.assign({}, chaotic[0].agent[x])
-                      // workflow.push(workFlowObject);
 
                       extractAgents(req.bag.state)
                         .then(function(response){
-
                           // retrieve agent configuration based on intent, agent name and platform
                           // needs to be updated to handle no agent being returned and for configuring workflow
                           // extractAgents needs to be fixed to laod and return an array of objects
                           console.log(g("Extracted Agent - BACK IN ACTION"))
                           console.log(JSON.stringify(response))
-/*
 
-                          // grab intent objects for further filtering
-                          // note all priority properties in config = 1. Future enhancement to permit differentiated bots
-                          // based on customer segment
-                          let intentobj = {}
-                          intentobj =  configureAgents.filter(function (obj){
-                              return obj.intent == response.intent;
-                            })
-                         // from the filtered intent array, grab the agent that matches
-                          let agentobj = {}
-                          agentobj =  intentobj.filter(function (obj){
-                              return obj.name == response.agent;
-                            })
-                        // grab config and auth data for platform to be pulsed
-                          let configobj = {}
-                          configobj =  configureAgents.filter(function (obj){
-                              return obj.platform == response.platform;
-                              })
-
-                          // merge two objects to create new workflow entry
-                          workFlowObject = {};
-                          workFlowObject = Object.assign(configobj[0], agentobj[0]);
-
-                          // final update specific properties
-                          workFlowObject.name = response.agent;
-                          workFlowObject.greeting = response.greeting;
-                          workFlowObject.id = uuid.v1({msecs: new Date()});
-
-                          console.log("DEBUG FROM CASE WATSON")*/
-                      
                           console.log(g('about to head to setworkflow'));
 
                           let params = {};
@@ -167,6 +138,7 @@ module.exports = function(router) {
                             callback(null, 'watson')
                           })
                         })
+
                       })
 
                   break;
@@ -209,9 +181,50 @@ module.exports = function(router) {
                       .then(function(result){
                       console.log(g('open responds'));
                       console.log({result: JSON.stringify(result)})
-                      // spoof
+
                       req.bag.state.response = result.response.result.payload
-                      callback(null, 'open')
+
+                      // inspect Open Response - note the result needs to be returned as payload
+                      // if bot referral then grab bot config from config array
+
+                      extractAgents(req.bag.state)
+                        .then(function(response){
+
+                          // no triggers found
+                          if (response == null) {
+                            console.log(r("ACTION ROUTE SENSES NO MORE TRIGGERS"))
+                            console.log({array: workflow})
+                            console.log({count: count})
+                            callback(null, 'open')
+                          }
+                          // retrieve agent configuration based on intent, agent name and platform
+                          // extractAgents needs to be fixed to laod and return an array of objects
+                          console.log(g("Extracted Agent - BACK IN ACTION"))
+                          console.log(JSON.stringify(response))
+
+                          console.log(g('about to head to setworkflow'));
+
+                          let params = {};
+                          params.priority = '1';
+                          params.response = response;
+
+                        setWorkflow(params)
+                          .then(function(response){
+                            console.log(g('OPEN WORKFLOW ACTIONS'));
+                            console.log({response: JSON.stringify(response)});
+                            console.log(r('STATE BEFORE ARRAY UPDATE'));
+                            console.log({array: workflow});
+
+                            // jump through hoops so new object created and not simply a reference
+                            let stageObj = {};
+                            let newResponseObject = {};
+                            newResponseObject = Object.assign(stageObj, response)
+
+                            workflow.push(newResponseObject)
+                            console.log({array: workflow});
+                            callback(null, 'open')
+                          })
+                        })
                     })
 
                     break;

@@ -15,9 +15,6 @@ import { g, b, gr, r, y }    from '../color/chalk';
 function extractTriggers (uiString, cb) {
     var re = /\{(.*?)\}/g;
     var found = uiString.match(re);
-
-    console.log(g("TRIGGERS FOUND"))
-    console.log(found)
     cb(found)
 }
 
@@ -60,9 +57,12 @@ module.exports = {
     extractTriggers(str, function(found){
       // any triggers found?
       if (found== null) {
-        console.log(r("CORRECTION TRIGGERS NOT FOUND"))
+        console.log(r("TRIGGERS NOT FOUND"))
         return cb(null, null)
       }
+
+      console.log(g("TRIGGERS FOUND"))
+      console.log(found)
 
       found.forEach(function(element) {
         convertJSON(element, function(strJson) {
@@ -72,7 +72,7 @@ module.exports = {
                 console.log(err)
                 return cb(err)}
               else {
-                console.log(g("JSON TEST SUCCESS"))
+                console.log(g("JSON TEST SUCCESS  - REFACTOR FOR SCHEMA VALIDATION"))
                 console.log(JSON.stringify(o))
                 return cb(null, o)}
             })

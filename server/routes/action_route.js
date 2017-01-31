@@ -73,8 +73,9 @@ module.exports = function(router) {
               count++;
 
               console.log(r('TOP OF THE FUNCTION'));
-              console.log({count: count});
               console.log({array: workflow});
+              console.log({UpdatedCount: count});
+              console.log({workflowLength: workflow.length});
 
               switch (apiType) {
 
@@ -90,13 +91,15 @@ module.exports = function(router) {
                     setWorkflow(params)
                       .then(function(response){
                         console.log(g('INITIALIZATION ACTIONS'));
-                        console.log({response: JSON.stringify(response)});
                         workflow.push(response)
                         callback(null, 'unknown')
                       })
 
                     break;
                 case "watson":
+
+                  console.log(g('Watson Responds ' + config.name));
+                  console.log(g('Refactor to iterate over text array + load output dialogue just subset'));
                   getWatson(req.bag.state, config)
                     .then(function(response){
 
@@ -106,13 +109,11 @@ module.exports = function(router) {
                       let inputObject = Object.assign(sourceObject, response.watsonResponse)
                       req.bag.state.output_dialogue_objects.push(inputObject)  // capture response object in state
 
-                      console.log(g('watson responds'));
-                      console.log({watson: JSON.stringify(inputObject)})
+                      // future fix -- need to iterate over text array -- concatenate responses - send single string?
 
-                      // future fix -- need to iterate over output array
                       req.bag.state.response = response.watsonResponse.output.text[0];   // REFACTOR Need to iterate over output array
 
-                      // inspect watson Response
+                      // inspect Watson Response
                       // if bot referral then grab bot config from config array
 
                       extractAgents(req.bag.state)
@@ -120,10 +121,8 @@ module.exports = function(router) {
                           // retrieve agent configuration based on intent, agent name and platform
                           // needs to be updated to handle no agent being returned and for configuring workflow
                           // extractAgents needs to be fixed to laod and return an array of objects
-                          console.log(g("Extracted Agent - BACK IN ACTION"))
+                          console.log(g("Found Agent Referral"))
                           console.log(JSON.stringify(response))
-
-                          console.log(g('about to head to setworkflow'));
 
                           let params = {};
                           params.priority = '1';
@@ -132,9 +131,7 @@ module.exports = function(router) {
                         setWorkflow(params)
                           .then(function(response){
                             console.log(g('WATSON WORKFLOW ACTIONS'));
-                            console.log({response: JSON.stringify(response)});
                             workflow.push(response)
-                            console.log({array: workflow});
                             callback(null, 'watson')
                           })
                         })
@@ -169,6 +166,7 @@ module.exports = function(router) {
                     break;
 
                 case "open":
+                    console.log(g('Open Responds ' + config.name));
 
                     let api_key = config.username + ":" + config.password;
                     // openwhisk configurators
@@ -179,53 +177,36 @@ module.exports = function(router) {
 
                     ow.actions.invoke({actionName: config.name, blocking: true, params: {}})
                       .then(function(result){
-                      console.log(g('open responds'));
-                      console.log({result: JSON.stringify(result)})
 
-                      req.bag.state.response = result.response.result.payload
+                        req.bag.state.response = result.response.result.payload
 
-                      // inspect Open Response - note the result needs to be returned as payload
-                      // if bot referral then grab bot config from config array
+                        // inspect Open Response - note the result needs to be returned as payload
+                        // if bot referral then grab bot config from config array
 
-                      extractAgents(req.bag.state)
-                        .then(function(response){
-
-                          // no triggers found
-                          if (response == null) {
-                            console.log(r("ACTION ROUTE SENSES NO MORE TRIGGERS"))
-                            console.log({array: workflow})
-                            console.log({count: count})
-                            callback(null, 'open')
-                          }
-                          // retrieve agent configuration based on intent, agent name and platform
-                          // extractAgents needs to be fixed to laod and return an array of objects
-                          console.log(g("Extracted Agent - BACK IN ACTION"))
-                          console.log(JSON.stringify(response))
-
-                          console.log(g('about to head to setworkflow'));
-
-                          let params = {};
-                          params.priority = '1';
-                          params.response = response;
-
-                        setWorkflow(params)
+                        extractAgents(req.bag.state)
                           .then(function(response){
-                            console.log(g('OPEN WORKFLOW ACTIONS'));
-                            console.log({response: JSON.stringify(response)});
-                            console.log(r('STATE BEFORE ARRAY UPDATE'));
-                            console.log({array: workflow});
 
-                            // jump through hoops so new object created and not simply a reference
-                            let stageObj = {};
-                            let newResponseObject = {};
-                            newResponseObject = Object.assign(stageObj, response)
+                            // no triggers found
+                            if (response == null) {
+                              console.log(r("ACTION ROUTE SENSES NO MORE TRIGGERS"))
+                              return callback(null, 'open')
+                            }
+                            // retrieve agent configuration based on intent, agent name and platform
+                            // extractAgents needs to be fixed to load and return an array of objects
+                              console.log(g("AGENT TRIGGER FOUND - CONFIG WORKFLOW"))
 
-                            workflow.push(newResponseObject)
-                            console.log({array: workflow});
-                            callback(null, 'open')
-                          })
-                        })
-                    })
+                              let params = {};
+                              params.priority = '1';
+                              params.response = response;
+
+                              setWorkflow(params)
+                                .then(function(response){
+                                  console.log(g('OPEN WORKFLOW ARRAY LOADED'));
+                                  workflow.push(response)
+                                  callback(null, 'open')
+                                })
+                              })
+                            })
 
                     break;
 

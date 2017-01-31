@@ -34,7 +34,7 @@ module.exports = function(router) {
             req.bag.agents = response.slice()    // copies array of agent configuration objects
           })
 
-        ////////////
+        ////////////      
 
         req.bag.state =                         {};
         req.bag.state.to_client =               req.body.To;   // message to

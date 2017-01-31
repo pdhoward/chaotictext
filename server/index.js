@@ -139,7 +139,7 @@ require('./routes/response_route')(responseRouter);
 app.use(function(req, res, next) {
   console.log("---------INCOMING----------")
   console.log({requrl: req.url})
-  console.log({reqbody: req.body.Body})
+  console.log({text: req.body})
   next()
 })
 
